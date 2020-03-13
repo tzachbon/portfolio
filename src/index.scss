@@ -1,0 +1,29 @@
+@import "./assets/scss/globals";
+
+//base
+@import "./assets/scss/normalize";
+@import "./assets/scss/base";
+@import "./assets/scss/components";
+
+//transitionGroups
+@import "./assets/scss/transitionGroups";
+
+//pages
+@import "./assets/scss/solutions";
+//ui
+@import './assets/scss/ui';
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing : antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
