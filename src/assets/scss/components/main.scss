@@ -1,15 +1,16 @@
 .main {
-
     @include flex-center;
     min-width : 100vw;
     min-height: 100vh;
 
     header {
         @include flex-column;
+        pointer-events : none;
         justify-content: flex-start;
         position       : fixed;
         color          : white;
         @include animation(softFromTop .5s .9s $easing both);
+        padding  : 1rem;
         font-size: 7.2rem;
 
         @media #{$media-desktop-small} {
@@ -23,6 +24,13 @@
         @media #{$media-phone-landscape} {
             font-size: 4.2rem;
         }
+
+        // &:after {
+        //     @include pseudo;
+        //     background: linear-gradient(90deg, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 50%);
+        //     @include animation(moveBg .7s 2s $easing both);
+        //     background-size: 200% 100%;
+        // }
     }
 }
 

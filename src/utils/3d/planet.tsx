@@ -2,6 +2,7 @@ import { ThreeAbstract } from './3d-abstract';
 import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader'
 import * as THREE from 'three';
 import { toRadians } from './math';
+import OrbitControl from './orbit-control';
 
 
 export class Planet extends ThreeAbstract {
@@ -22,7 +23,8 @@ export class Planet extends ThreeAbstract {
 
     constructor(
         private loadingManager: THREE.LoadingManager,
-        private scene: THREE.Scene
+        private scene: THREE.Scene,
+        private control: typeof OrbitControl
     ) {
         super()
         this.init()
@@ -67,6 +69,7 @@ export class Planet extends ThreeAbstract {
                             objLoader.load('assets/models/NatureFreePack1.obj', (group: THREE.Group) => {
                                 this.star.children.forEach((m: THREE.Mesh) => m?.geometry?.center())
                                 this.scene.add(this.star);
+                                this.control.target = this.star.position;
                             })
                         })
                     }
@@ -188,7 +191,6 @@ export class Planet extends ThreeAbstract {
 
         this.isDragging = true;
 
-        event.preventDefault();
 
         document.addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
         document.addEventListener('mouseup', this.onDocumentMouseUp.bind(this), false);
@@ -215,9 +217,10 @@ export class Planet extends ThreeAbstract {
     }
 
     onDocumentMouseUp(event) {
-        
+
         this.isDragging = false;
-            
+
+
         document.removeEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
         document.removeEventListener('mouseup', this.onDocumentMouseUp.bind(this), false);
         document.removeEventListener('mouseout', this.onDocumentMouseOut.bind(this), false);
@@ -238,8 +241,8 @@ export class Planet extends ThreeAbstract {
         if (event.touches.length == 1) {
 
             this.isDragging = true;
+            this.control.enabled = false;
 
-            event.preventDefault();
 
             this.mouseXOnMouseDown = event.touches[0].pageX - this.windowHalfX;
             this.targetRotationOnMouseDownX = this.targetRotationX;
@@ -256,8 +259,8 @@ export class Planet extends ThreeAbstract {
         if (event.touches.length == 1) {
 
             this.isDragging = true;
+            this.control.enabled = false;
 
-            event.preventDefault();
 
             this.mouseX = event.touches[0].pageX - this.windowHalfX;
             this.targetRotationX = this.targetRotationOnMouseDownX + (this.mouseX - this.mouseXOnMouseDown) * 0.05;

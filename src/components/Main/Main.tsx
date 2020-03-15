@@ -46,6 +46,8 @@ const Main = (props: Props) => {
 
 
 
+
+
     return (
         <div className='main' onClick={onMainClicked} ref={mainRef}>
             <header >

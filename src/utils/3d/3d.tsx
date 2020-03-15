@@ -5,7 +5,8 @@ import { ThreeAbstract } from './3d-abstract';
 import { Planet } from './planet';
 import { Stars } from './stars';
 import createMainText from './text';
-
+import { easeInSine } from 'js-easing-functions';
+import OrbitControl from './orbit-control';
 
 class Animation extends ThreeAbstract {
     private scene: THREE.Scene;
@@ -17,7 +18,10 @@ class Animation extends ThreeAbstract {
     private planet: Planet;
     private main: THREE.Mesh | THREE.Group;
     private zoomInFinished = true;
+    private readonly maxZoom = this.isMobile ? 85 : 50;
     private text: THREE.Group;
+    public tween;
+    public control: typeof OrbitControl;
     public mainItem: THREE.Mesh | THREE.Group;
     public rotationMap = new Map<string, THREE.Mesh | THREE.Light>();
     rotationSpeed = 0.001;
@@ -48,6 +52,7 @@ class Animation extends ThreeAbstract {
         this.startScene();
         this.startLighting()
         this.startCamera();
+        this.startOrbitControl();
 
 
         this.renderer = new THREE.WebGLRenderer();
@@ -62,10 +67,20 @@ class Animation extends ThreeAbstract {
         this.appendPlanet();
         // this.appendText()
 
-
         this.initEventListeners();
         this.mainLoop();
 
+    }
+
+
+    startOrbitControl() {
+        this.control = new OrbitControl(this.camera, this.domParent);
+        this.control.enableDamping = true;
+        this.control.enableRotate = false;
+        this.control.enableZoom = false;
+        this.control.enablePan = false;
+        this.control.minDistance = this.maxZoom;
+        this.control.maxDistance = 500;
     }
 
     startLoadingManager() {
@@ -112,12 +127,11 @@ class Animation extends ThreeAbstract {
         this.directionalLightUp.shadow.bias = 0.05;
         this.directionalLightUp.shadow.mapSize.width = 2048;
         this.directionalLightUp.shadow.mapSize.width = 1024;
-        this.rotationMap.set('light', this.directionalLightUp);
         this.scene.add(this.directionalLightUp);
     }
 
     appendPlanet() {
-        this.planet = new Planet(this.loadingManager, this.scene);
+        this.planet = new Planet(this.loadingManager, this.scene, this.control);
         this.main = this.planet.star;
     }
 
@@ -133,15 +147,24 @@ class Animation extends ThreeAbstract {
 
     appendStars() {
         this.stars = new Stars();
+        this.stars.stars.forEach((star, i) => this.rotationMap.set(`star_${i}`, star));
         this.scene.add(...this.stars.stars)
     }
 
     zoomIn() {
 
+
+
         let i = 0;
         let isFinished = false;
 
         this.zoomInFinished = isFinished
+
+        const duration = 10000;
+        const startPosition = this.directionalLightUp.position.z;
+        const endPosition = 100;
+
+        let startTime = Date.now();
 
         this.camera.remove(this.text);
         this.text && this.text.position.set(
@@ -152,22 +175,40 @@ class Animation extends ThreeAbstract {
         this.scene.add(this.text);
 
         return new Promise((res, rej) => {
-            this.zoomInHelper(i, isFinished, res);
+            this.zoomInHelper(i, isFinished, res, {
+                duration,
+                startPosition,
+                endPosition,
+                startTime
+            });
         })
             .then(() => this.zoomInFinished = true)
+            .then(() => this.control.enableZoom = true)
     }
 
-    private zoomInHelper(index: number, isFinished: boolean, resolver: Function) {
-        const maxZoom = this.isMobile ? 85 : 40;
+    private zoomInHelper(index: number, isFinished: boolean, resolver: Function, easeConfig) {
 
-        if (this.camera.position.z > maxZoom && !isFinished) {
-            this.camera.position.z -= (1 * (++index / 100));
-            this.camera.position.x > 25 && (this.camera.position.x -= (1 * (++index / 100)));
+        const {
+            duration,
+            startPosition,
+            startTime
+        } = easeConfig;
 
-            requestAnimationFrame(this.zoomInHelper.bind(this, index, isFinished, resolver))
+        const elapsed = Date.now() - startTime;
+
+        if (elapsed < duration) {
+            this.directionalLightUp.position.z = easeInSine(elapsed, startPosition, this.maxZoom, duration);
+        }
+
+
+
+        if (this.camera.position.z > this.maxZoom && !isFinished) {
+            this.camera.position.z -= (++index / 20);
+
+            requestAnimationFrame(this.zoomInHelper.bind(this, index, isFinished, resolver, easeConfig))
 
         } else {
-            this.rotationSpeed = .0003;
+            this.rotationSpeed = .0007;
             isFinished = true;
             resolver(isFinished);
         }
@@ -180,20 +221,13 @@ class Animation extends ThreeAbstract {
     private cameraRotation() {
 
 
-        let x = this.camera.position.x;
-        let z = this.camera.position.z;
+        this.rotationMap.forEach(element => {
+            let x = element.position.x;
+            let z = element.position.z;
 
-
-        if (z > 600 || z < 25) return;
-
-
-        this.zoomInFinished && (this.camera.position.x = x * Math.cos(this.rotationSpeed) + z * Math.sin(this.rotationSpeed));
-        this.camera.position.z = z * Math.cos(this.rotationSpeed) - x * Math.sin(this.rotationSpeed);
-        this.rotationMap.forEach(element => element.position.set(
-            this.camera.position.x,
-            this.camera.position.y,
-            this.camera.position.z
-        ))
+            element.position.x = x * Math.cos(this.rotationSpeed) + z * Math.sin(this.rotationSpeed);
+            element.position.z = z * Math.cos(this.rotationSpeed) - x * Math.sin(this.rotationSpeed);
+        })
 
     }
 
@@ -204,6 +238,7 @@ class Animation extends ThreeAbstract {
 
         this.lookAt();
 
+        this.control.update();
         this.renderer.render(this.scene, this.camera)
 
         if (this.shouldRan) {
@@ -229,10 +264,12 @@ class Animation extends ThreeAbstract {
 
         })
 
-        window.addEventListener('wheel', e => {
-            const delta = e.deltaY / 50;
-            this.zoom(delta);
-        })
+        // window.addEventListener('wheel', e => {
+        //     if (!this.zoomInFinished) return;
+
+        //     const delta = e.deltaY / 50;
+        //     this.zoom(delta);
+        // })
 
 
 
@@ -241,12 +278,9 @@ class Animation extends ThreeAbstract {
 
 
     zoom(delta: number) {
-        const z = this.camera.position.z + delta;
 
-        console.log('====================================');
-        console.log(z);
-        console.log('====================================');
-        if (z > 500 || z < 30) return;
+        const z = this.camera.position.z + delta;
+        if ((z > 500 && delta > 0) || (z <= (this.maxZoom) && delta < 0)) return;
 
         this.camera.position.x += delta;
         this.camera.position.y += delta;
@@ -255,8 +289,8 @@ class Animation extends ThreeAbstract {
         setTimeout(() => {
 
             this.directionalLightUp.position.x = this.camera.position.x;
-            this.directionalLightUp.position.y = this.camera.position.x;
-            this.directionalLightUp.position.z = this.camera.position.x;
+            this.directionalLightUp.position.y = this.camera.position.y;
+            this.directionalLightUp.position.z = this.camera.position.z;
 
         }, 250);
     }
