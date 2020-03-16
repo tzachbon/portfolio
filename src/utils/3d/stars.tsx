@@ -8,7 +8,7 @@ export class Stars extends ThreeAbstract {
 
     constructor(
         private maxStars = 1000,
-        private starsMaxRange = 500
+        private starsMaxRange = 700
     ) {
         super()
         this.init()
