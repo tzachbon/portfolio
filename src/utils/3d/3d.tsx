@@ -50,8 +50,8 @@ class Animation extends ThreeAbstract {
     protected init() {
         this.startLoadingManager();
         this.startScene();
-        this.startLighting()
         this.startCamera();
+        this.startLighting()
         this.startOrbitControl();
 
 
@@ -65,7 +65,6 @@ class Animation extends ThreeAbstract {
 
         this.appendStars();
         this.appendPlanet();
-        // this.appendText()
 
         this.initEventListeners();
         this.mainLoop();
@@ -112,7 +111,7 @@ class Animation extends ThreeAbstract {
             1000
         )
 
-        this.camera.position.z = 500;
+        this.camera.position.z = 1000;
         this.camera.position.y = 25;
         this.scene.add(this.camera)
     }
@@ -128,10 +127,16 @@ class Animation extends ThreeAbstract {
         this.directionalLightUp.shadow.mapSize.width = 2048;
         this.directionalLightUp.shadow.mapSize.width = 1024;
         this.scene.add(this.directionalLightUp);
+
+    }
+
+    appendHelper(size = 400) {
+        const axesHelper = new THREE.AxesHelper(size);
+        this.scene.add(axesHelper);
     }
 
     appendPlanet() {
-        this.planet = new Planet(this.loadingManager, this.scene, this.control);
+        this.planet = new Planet(this.loadingManager, this.scene, this.control, this.renderer, this.camera);
         this.main = this.planet.star;
     }
 
@@ -203,7 +208,7 @@ class Animation extends ThreeAbstract {
 
 
         if (this.camera.position.z > this.maxZoom && !isFinished) {
-            this.camera.position.z -= (++index / 20);
+            this.camera.position.z -= (++index / (this.camera.position.z > 100 ? 20 : 100));
 
             requestAnimationFrame(this.zoomInHelper.bind(this, index, isFinished, resolver, easeConfig))
 

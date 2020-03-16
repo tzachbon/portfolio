@@ -3,6 +3,8 @@ import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader'
 import * as THREE from 'three';
 import { toRadians } from './math';
 import OrbitControl from './orbit-control';
+import AboutMe3D from './about-me';
+import MyWork3D from './my-work';
 
 
 export class Planet extends ThreeAbstract {
@@ -20,11 +22,15 @@ export class Planet extends ThreeAbstract {
     windowHalfX = window.innerWidth / 2;
     windowHalfY = window.innerHeight / 2;
     finalRotationY: number;
+    aboutMe: AboutMe3D;
+    myWork: MyWork3D;
 
     constructor(
         private loadingManager: THREE.LoadingManager,
         private scene: THREE.Scene,
-        private control: typeof OrbitControl
+        private control: typeof OrbitControl,
+        private renderer: THREE.Renderer,
+        private camera: THREE.Camera
     ) {
         super()
         this.init()
@@ -39,52 +45,46 @@ export class Planet extends ThreeAbstract {
         this.mainLoop();
     }
 
-    appendStars() {
+    private appendStars() {
 
         let objLoader = new OBJLoader(this.loadingManager);
         let mtlLoader = new MTLLoader();
 
-        new THREE.TextureLoader(this.loadingManager).load(
-            // resource URL
-            './assets/images/Abstract_003_NRM.jpg',
-            // Function when resource is loaded
-            (texture) => {
+        new THREE.TextureLoader(this.loadingManager)
+            .load(
+                './assets/images/Abstract_003_NRM.jpg',
+                (texture) => {
 
-                objLoader.load(
-                    'assets/models/Earth_Low.obj',
-                    (obj: THREE.Group) => {
+                    objLoader.load(
+                        'assets/models/Earth_Low.obj',
+                        (obj: THREE.Group) => {
 
-                        this.star = obj;
-                        this.star.scale.set(0.15, 0.15, 0.15);
-                        this.star.children.forEach((m: THREE.Mesh) => {
-                            const material = (m.material as THREE.MeshPhongMaterial);
-                            material.map = texture;
-                        })
-                        this.star.receiveShadow = true;
-                        this.star.position.set(0, 0, 0);
-
-                        mtlLoader.load('assets/models/NatureFreePack1.mtl', (materials) => {
-                            materials.preload()
-                            objLoader.setMaterials(materials)
-                            objLoader.load('assets/models/NatureFreePack1.obj', (group: THREE.Group) => {
-                                this.star.children.forEach((m: THREE.Mesh) => m?.geometry?.center())
-                                this.scene.add(this.star);
-                                this.control.target = this.star.position;
+                            this.star = obj;
+                            this.star.scale.set(0.15, 0.15, 0.15);
+                            this.star.children.forEach((m: THREE.Mesh) => {
+                                const material = (m.material as THREE.MeshPhongMaterial);
+                                material.map = texture;
                             })
-                        })
-                    }
-                )
-            },
-            // Function called when download progresses
-            (xhr) => {
-            },
-            // Function called when download errors
-            (xhr) => {
-                console.log('An error happened');
-            }
+                            this.star.receiveShadow = true;
+                            this.star.position.set(0, 0, 0);
 
-
-        )
+                            mtlLoader.load('assets/models/NatureFreePack1.mtl', (materials) => {
+                                materials.preload()
+                                objLoader.setMaterials(materials)
+                                objLoader.load('assets/models/NatureFreePack1.obj', (group: THREE.Group) => {
+                                    this.star.children.forEach((m: THREE.Mesh) => m?.geometry?.center());
+                                    this.append();
+                                    this.createAboutMe();
+                                    this.createMyWork();
+                                    this.control.target = this.star.position;
+                                })
+                            })
+                        }
+                    )
+                },
+                (xhr) => { },
+                (xhr) => { console.log('An error happened'); }
+            )
     }
 
 
@@ -95,6 +95,19 @@ export class Planet extends ThreeAbstract {
         if (this.shouldRan) {
             requestAnimationFrame(this.mainLoop.bind(this));
         }
+    }
+
+    createMyWork() {
+        this.myWork = new MyWork3D(this.loadingManager, this.scene, this.control, this.renderer, this.camera, this.star);
+    }
+
+    createAboutMe() {
+        this.aboutMe = new AboutMe3D(this.loadingManager, this.scene, this.control, this.renderer, this.camera, this.star);
+    }
+
+    append() {
+        this.scene.add(this.star);
+
     }
 
     starRotation() {
