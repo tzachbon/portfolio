@@ -129,9 +129,7 @@ class MyWork3D extends ThreeAbstract {
         if (this.saucer.position.z < -53) this.indicator = 1;
         if (this.saucer.position.z > -47) this.indicator = -1;
 
-        if (this.saucer.position.z < -51 || this.saucer.position.z > -45) {
-            ADD = 0.01;
-        }
+   
 
         this.saucer.position.z += (ADD * this.indicator);
 

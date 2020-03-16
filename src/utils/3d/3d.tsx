@@ -1,13 +1,14 @@
-
+import { easeInSine } from 'js-easing-functions';
 import { BehaviorSubject } from 'rxjs';
 import * as THREE from 'three';
+import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader';
+import randomInRange from '../randomInRange';
 import { ThreeAbstract } from './3d-abstract';
+import OrbitControl from './orbit-control';
 import { Planet } from './planet';
 import { Stars } from './stars';
 import createMainText from './text';
-import { easeInSine } from 'js-easing-functions';
-import OrbitControl from './orbit-control';
-
+import { toRadians } from './math';
 class Animation extends ThreeAbstract {
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
@@ -18,12 +19,12 @@ class Animation extends ThreeAbstract {
     private planet: Planet;
     private main: THREE.Mesh | THREE.Group;
     private zoomInFinished = true;
-    private readonly maxZoom = this.isMobile ? 85 : 50;
+    private readonly maxZoom = this.isMobile ? 85 : 60;
     private text: THREE.Group;
     public tween;
     public control: typeof OrbitControl;
     public mainItem: THREE.Mesh | THREE.Group;
-    public rotationMap = new Map<string, THREE.Mesh | THREE.Light>();
+    public rotationMap = new Map<string, THREE.Mesh | THREE.Light | THREE.Group>();
     rotationSpeed = 0.001;
     private tree: THREE.Mesh;
     public loadingStatus = new BehaviorSubject<number>(0)
@@ -65,12 +66,12 @@ class Animation extends ThreeAbstract {
 
         this.appendStars();
         this.appendPlanet();
+        this.appendClouds();
 
         this.initEventListeners();
         this.mainLoop();
 
     }
-
 
     startOrbitControl() {
         this.control = new OrbitControl(this.camera, this.domParent);
@@ -130,10 +131,48 @@ class Animation extends ThreeAbstract {
 
     }
 
+    appendClouds() {
+
+        let objLoader = new OBJLoader(this.loadingManager);
+        let mtlLoader = new MTLLoader();
+
+        mtlLoader.load('assets/models/clouds/cloud.mtl', (materials) => {
+            materials.preload()
+            objLoader.setMaterials(materials)
+            objLoader.load('assets/models/clouds/cloud.obj', (group: THREE.Group) => {
+
+                for (let i = 0; i < 20; i++) {
+                    const cloud = group.clone();
+
+                    cloud.children.forEach((m: THREE.Mesh) => {
+                        m?.geometry?.center();
+                        (m.material as THREE.MeshPhongMaterial).color = new THREE.Color(0xffffff);
+                    });
+                    this.scene.add(cloud);
+
+                    const theta = toRadians(randomInRange(-180, 180));
+                    const alpha = toRadians(randomInRange(-180, 180));
+                    cloud.position.x = randomInRange(50, 100) * Math.sin(alpha) * Math.cos(theta);
+                    cloud.position.y = randomInRange(50, 100) * Math.sin(alpha) * Math.sin(theta);
+                    cloud.position.z = randomInRange(50, 100) * Math.cos(theta);
+
+                    const randomScale = randomInRange(0.02, 0.04);
+                    cloud.scale.set(randomScale, randomScale, randomScale);
+                    this.rotationMap.set(`cloud_${i}`, cloud);
+                }
+
+
+            })
+        })
+
+    }
+
+
     appendHelper(size = 400) {
         const axesHelper = new THREE.AxesHelper(size);
         this.scene.add(axesHelper);
     }
+
 
     appendPlanet() {
         this.planet = new Planet(this.loadingManager, this.scene, this.control, this.renderer, this.camera);

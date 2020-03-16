@@ -7,6 +7,7 @@ import AboutMe3D from './about-me';
 import MyWork3D from './my-work';
 
 
+
 export class Planet extends ThreeAbstract {
     star: THREE.Group;
     previousMousePosition = { x: 0, y: 0 };
@@ -24,6 +25,7 @@ export class Planet extends ThreeAbstract {
     finalRotationY: number;
     aboutMe: AboutMe3D;
     myWork: MyWork3D;
+    clouds: THREE.Group[] = [];
 
     constructor(
         private loadingManager: THREE.LoadingManager,
@@ -109,6 +111,9 @@ export class Planet extends ThreeAbstract {
         this.scene.add(this.star);
 
     }
+
+
+
 
     starRotation() {
         if (!this.star || !this.isDragging) return;
