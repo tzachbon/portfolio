@@ -301,8 +301,8 @@ class Animation extends ThreeAbstract {
 
         window.addEventListener('mousemove', ({ movementX, movementY }) => {
 
-            this.camera.position.x -= movementX / 350;
-            this.camera.position.y -= movementY / 350;
+            this.camera.position.x -= movementX / 250;
+            this.camera.position.y -= movementY / 250;
 
         })
 
