@@ -150,11 +150,9 @@ class Animation extends ThreeAbstract {
                     });
                     this.scene.add(cloud);
 
-                    const theta = toRadians(randomInRange(-180, 180));
-                    const alpha = toRadians(randomInRange(-180, 180));
-                    cloud.position.x = randomInRange(50, 100) * Math.sin(alpha) * Math.cos(theta);
-                    cloud.position.y = randomInRange(50, 100) * Math.sin(alpha) * Math.sin(theta);
-                    cloud.position.z = randomInRange(50, 100) * Math.cos(theta);
+                    cloud.position.x = randomInRange(-150, 150, -100, 100);
+                    cloud.position.y = randomInRange(-150, 150, -100, 100);
+                    cloud.position.z = randomInRange(-150, 150, -100, 100);
 
                     const randomScale = randomInRange(0.02, 0.04);
                     cloud.scale.set(randomScale, randomScale, randomScale);

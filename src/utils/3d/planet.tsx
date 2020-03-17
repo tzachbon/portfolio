@@ -5,6 +5,7 @@ import { toRadians } from './math';
 import OrbitControl from './orbit-control';
 import AboutMe3D from './about-me';
 import MyWork3D from './my-work';
+import Rocks3D from './rocks';
 
 
 
@@ -26,6 +27,7 @@ export class Planet extends ThreeAbstract {
     aboutMe: AboutMe3D;
     myWork: MyWork3D;
     clouds: THREE.Group[] = [];
+    rocks: Rocks3D;
 
     constructor(
         private loadingManager: THREE.LoadingManager,
@@ -63,9 +65,11 @@ export class Planet extends ThreeAbstract {
 
                             this.star = obj;
                             this.star.scale.set(0.15, 0.15, 0.15);
-                            this.star.children.forEach((m: THREE.Mesh) => {
+                            this.star.children.forEach((m: THREE.Mesh, i) => {
+                                // if (i) {
                                 const material = (m.material as THREE.MeshPhongMaterial);
                                 material.map = texture;
+                                // }
                             })
                             this.star.receiveShadow = true;
                             this.star.position.set(0, 0, 0);
@@ -74,8 +78,12 @@ export class Planet extends ThreeAbstract {
                                 materials.preload()
                                 objLoader.setMaterials(materials)
                                 objLoader.load('assets/models/NatureFreePack1.obj', (group: THREE.Group) => {
-                                    this.star.children.forEach((m: THREE.Mesh) => m?.geometry?.center());
+                                    this.star.children.forEach((m: THREE.Mesh, i) => {
+                                        m?.geometry?.center();
+                             
+                                    });
                                     this.append();
+                                    this.appendRocks();
                                     this.createAboutMe();
                                     this.createMyWork();
                                     this.control.target = this.star.position;
@@ -110,6 +118,10 @@ export class Planet extends ThreeAbstract {
     append() {
         this.scene.add(this.star);
 
+    }
+
+    appendRocks() {
+        this.rocks = new Rocks3D(this.loadingManager, this.scene, this.control, this.renderer, this.camera, this.star);
     }
 
 
