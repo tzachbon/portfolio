@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import defaultFont from './../../assets/fonts/Raleway_Bold.json';
+import defaultFont from '../../assets/fonts/Raleway_Bold.json';
 import { DESKTOP } from '../mobile';
 
 

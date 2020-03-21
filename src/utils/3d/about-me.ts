@@ -5,6 +5,8 @@ import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader'
 import { createText } from './text';
 import randomInRange from '../randomInRange';
 import GLTFLoader from './GLTFLoader';
+import { easeInSine } from 'js-easing-functions';
+import { DESKTOP } from '../mobile';
 
 
 
@@ -50,6 +52,88 @@ class AboutMe3D extends ThreeAbstract {
             this.tree.position.z - 15,
         )
         this.group.add(this.header);
+    }
+
+    zoomIn() {
+
+        let isFinished = false;
+
+
+        const duration = 2000;
+        const startPosition = {
+            x: this.parent.rotation.x,
+            y: this.parent.rotation.y,
+            z: this.parent.rotation.z,
+            vector: new THREE.Vector3(this.parent.position.x, this.parent.position.y, this.parent.position.z),
+            camera: {
+                z: this.camera.position.z
+            }
+        };
+        const endPosition = {
+            x: -1,
+            y: -0.22569187970375412,
+            z: 0,
+            vector: new THREE.Vector3(this.astro.position.x, this.astro.position.y, this.astro.position.z),
+            camera: {
+                z: 5
+            }
+        };
+        const minDistance = this.control.minDistance;
+        this.control.minDistance = 10;
+
+
+        let startTime = Date.now();
+        this.control.enableZoom = false
+        return new Promise((res, rej) => {
+            this.zoomInHelper(isFinished, res, {
+                duration,
+                startPosition,
+                endPosition,
+                startTime,
+                minDistance
+            });
+        })
+
+    }
+
+    private zoomInHelper(isFinished: boolean, resolver: Function, easeConfig) {
+        const {
+            duration,
+            startPosition,
+            startTime,
+            endPosition,
+        } = easeConfig;
+
+        const elapsed = Date.now() - startTime;
+
+        if (elapsed < duration) {
+            this.parent.rotation.x = easeInSine(elapsed, startPosition.x, endPosition.x, duration);
+            this.parent.rotation.y = easeInSine(elapsed, startPosition.y, endPosition.y, duration);
+            this.parent.rotation.z = easeInSine(elapsed, startPosition.z, endPosition.z, duration);
+
+            if (DESKTOP) {
+                this.control.target = new THREE.Vector3(
+                    easeInSine(elapsed, startPosition.vector.x, -this.astro.position.x - 20, duration),
+                    easeInSine(elapsed, startPosition.vector.y, -this.astro.position.y - 20, duration),
+                    easeInSine(elapsed, startPosition.vector.z, -this.astro.position.z - 20, duration),
+                )
+
+            } else {
+                this.camera.position.z -= 0.3;
+                this.camera.position.y += 0.03;
+                this.camera.position.x -= 0.03;
+            }
+
+            requestAnimationFrame(this.zoomInHelper.bind(this, isFinished, resolver, easeConfig));
+        } else {
+            isFinished = true;
+            // this.control.target = this.astro.position;
+            resolver(isFinished);
+        }
+
+
+
+
     }
 
     setElements() {

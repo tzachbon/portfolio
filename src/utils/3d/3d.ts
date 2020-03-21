@@ -66,6 +66,7 @@ class Animation extends ThreeAbstract {
 
         this.appendStars();
         this.appendPlanet();
+        this.appendHelper();
         this.appendClouds();
 
         this.initEventListeners();
@@ -226,6 +227,8 @@ class Animation extends ThreeAbstract {
         })
             .then(() => this.zoomInFinished = true)
             .then(() => this.control.enableZoom = true)
+            .then(() => this.planet.aboutMe.zoomIn())
+            .then(() => this.planet.myWork.zoomIn())
     }
 
     private zoomInHelper(index: number, isFinished: boolean, resolver: Function, easeConfig) {
