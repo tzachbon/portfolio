@@ -15,7 +15,7 @@ const Main = (props: Props) => {
     const localStore = useLocalStore(() => ({
         isZoomed: false,
         opacity: 1,
-        showImage: true
+        isZoomEnded: false,
     }))
     const { store } = useStores();
 
@@ -38,6 +38,8 @@ const Main = (props: Props) => {
         if (localStore.opacity > 0) {
             localStore.opacity -= 0.01;
             requestAnimationFrame(onUpdateOpacity)
+        } else {
+            localStore.isZoomEnded = true;
         }
 
     }
@@ -63,7 +65,19 @@ const Main = (props: Props) => {
                     By Tzach Bonfil
                 </h3>
             </header>
-            
+
+            {
+                localStore.isZoomEnded && (
+                    <>
+                        <button onClick={store.animation.zoomInOnSection('aboutMe')} className='Button Button-white about-me'>
+                            About Me
+                        </button>
+                        <button onClick={store.animation.zoomInOnSection('myWork')} className='Button Button-white my-work'>
+                            My Work
+                        </button>
+                    </>
+                )
+            }
 
         </div>
     )

@@ -43,7 +43,7 @@ export class Planet extends ThreeAbstract {
 
     protected init() {
 
-        this.appendEventListener();
+        // this.appendEventListener();
         this.appendStars();
 
         this.mainLoop();

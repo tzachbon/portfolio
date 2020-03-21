@@ -1,12 +1,11 @@
+import { easeInOutCubic } from 'js-easing-functions';
 import * as THREE from 'three';
-import { ThreeAbstract } from './3d-abstract';
-import OrbitControl from './orbit-control';
-import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader'
-import { createText } from './text';
+import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader';
 import randomInRange from '../randomInRange';
+import { ThreeAbstract } from './3d-abstract';
 import GLTFLoader from './GLTFLoader';
-import { easeInSine } from 'js-easing-functions';
-import { DESKTOP } from '../mobile';
+import OrbitControl from './orbit-control';
+import { createText } from './text';
 
 
 
@@ -54,29 +53,26 @@ class AboutMe3D extends ThreeAbstract {
         this.group.add(this.header);
     }
 
-    zoomIn() {
+    zoomIn(duration = 2000) {
 
         let isFinished = false;
 
 
-        const duration = 2000;
         const startPosition = {
-            x: this.parent.rotation.x,
-            y: this.parent.rotation.y,
-            z: this.parent.rotation.z,
-            vector: new THREE.Vector3(this.parent.position.x, this.parent.position.y, this.parent.position.z),
-            camera: {
-                z: this.camera.position.z
-            }
+            vector: new THREE.Vector3(
+                this.camera.position.x,
+                this.camera.position.y,
+                this.camera.position.z
+            ),
         };
         const endPosition = {
-            x: -1,
-            y: -0.22569187970375412,
-            z: 0,
-            vector: new THREE.Vector3(this.astro.position.x, this.astro.position.y, this.astro.position.z),
-            camera: {
-                z: 5
-            }
+
+            vector: new THREE.Vector3(
+                15.907299999447188,
+                -64.3576415966628,
+                42.59462380594857,
+            ),
+
         };
         const minDistance = this.control.minDistance;
         this.control.minDistance = 10;
@@ -90,7 +86,7 @@ class AboutMe3D extends ThreeAbstract {
                 startPosition,
                 endPosition,
                 startTime,
-                minDistance
+                minDistance,
             });
         })
 
@@ -107,22 +103,20 @@ class AboutMe3D extends ThreeAbstract {
         const elapsed = Date.now() - startTime;
 
         if (elapsed < duration) {
-            this.parent.rotation.x = easeInSine(elapsed, startPosition.x, endPosition.x, duration);
-            this.parent.rotation.y = easeInSine(elapsed, startPosition.y, endPosition.y, duration);
-            this.parent.rotation.z = easeInSine(elapsed, startPosition.z, endPosition.z, duration);
+            // this.parent.rotation.x = easeInSine(elapsed, startPosition.x, endPosition.x, duration);
+            // this.parent.rotation.y = easeInSine(elapsed, startPosition.y, endPosition.y, duration);
+            // this.parent.rotation.z = easeInSine(elapsed, startPosition.z, endPosition.z, duration);
+            this.camera.position.set(
+                easeInOutCubic(elapsed, startPosition.vector.x, endPosition.vector.x - startPosition.vector.x, duration),
+                easeInOutCubic(elapsed, startPosition.vector.y, endPosition.vector.y - startPosition.vector.y, duration),
+                easeInOutCubic(elapsed, startPosition.vector.z, endPosition.vector.z - startPosition.vector.z, duration)
+            )
 
-            if (DESKTOP) {
-                this.control.target = new THREE.Vector3(
-                    easeInSine(elapsed, startPosition.vector.x, -this.astro.position.x - 20, duration),
-                    easeInSine(elapsed, startPosition.vector.y, -this.astro.position.y - 20, duration),
-                    easeInSine(elapsed, startPosition.vector.z, -this.astro.position.z - 20, duration),
-                )
 
-            } else {
-                this.camera.position.z -= 0.3;
-                this.camera.position.y += 0.03;
-                this.camera.position.x -= 0.03;
-            }
+            console.log(this.camera.position, endPosition.vector);
+
+
+
 
             requestAnimationFrame(this.zoomInHelper.bind(this, isFinished, resolver, easeConfig));
         } else {

@@ -8,7 +8,9 @@ import OrbitControl from './orbit-control';
 import { Planet } from './planet';
 import { Stars } from './stars';
 import createMainText from './text';
-import { toRadians } from './math';
+import MyWork3D from './my-work';
+import AboutMe3D from './about-me';
+import { getMain, setMain } from './main';
 class Animation extends ThreeAbstract {
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
@@ -16,7 +18,7 @@ class Animation extends ThreeAbstract {
     private isDragging = false;
     private loadingManager: THREE.LoadingManager;
     private directionalLightUp: THREE.DirectionalLight;
-    private planet: Planet;
+    public planet: Planet;
     private main: THREE.Mesh | THREE.Group;
     private zoomInFinished = true;
     private readonly maxZoom = this.isMobile ? 85 : 60;
@@ -66,15 +68,17 @@ class Animation extends ThreeAbstract {
 
         this.appendStars();
         this.appendPlanet();
-        this.appendHelper();
         this.appendClouds();
+        // this.appendHelper();
 
         this.initEventListeners();
         this.mainLoop();
 
     }
 
-    startOrbitControl() {
+
+
+    private startOrbitControl() {
         this.control = new OrbitControl(this.camera, this.domParent);
         this.control.enableDamping = true;
         this.control.enableRotate = false;
@@ -84,7 +88,7 @@ class Animation extends ThreeAbstract {
         this.control.maxDistance = 500;
     }
 
-    startLoadingManager() {
+    private startLoadingManager() {
 
         this.loadingManager = new THREE.LoadingManager();
 
@@ -100,12 +104,12 @@ class Animation extends ThreeAbstract {
         }
     }
 
-    startScene() {
+    private startScene() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x000000);
     }
 
-    startCamera() {
+    private startCamera() {
         this.camera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
@@ -118,7 +122,7 @@ class Animation extends ThreeAbstract {
         this.scene.add(this.camera)
     }
 
-    startLighting() {
+    private startLighting() {
         this.directionalLightUp = new THREE.DirectionalLight(0xffffff);
         this.directionalLightUp.castShadow = true;
         this.directionalLightUp.receiveShadow = true;
@@ -132,7 +136,7 @@ class Animation extends ThreeAbstract {
 
     }
 
-    appendClouds() {
+    private appendClouds() {
 
         let objLoader = new OBJLoader(this.loadingManager);
         let mtlLoader = new MTLLoader();
@@ -167,18 +171,18 @@ class Animation extends ThreeAbstract {
     }
 
 
-    appendHelper(size = 400) {
+    private appendHelper(size = 400) {
         const axesHelper = new THREE.AxesHelper(size);
         this.scene.add(axesHelper);
     }
 
 
-    appendPlanet() {
+    private appendPlanet() {
         this.planet = new Planet(this.loadingManager, this.scene, this.control, this.renderer, this.camera);
         this.main = this.planet.star;
     }
 
-    appendText() {
+    private appendText() {
         this.text = createMainText();
         this.text.position.set(
             0,
@@ -188,7 +192,7 @@ class Animation extends ThreeAbstract {
         this.camera.add(this.text);
     }
 
-    appendStars() {
+    private appendStars() {
         this.stars = new Stars();
         this.stars.stars.forEach((star, i) => this.rotationMap.set(`star_${i}`, star));
         this.scene.add(...this.stars.stars)
@@ -226,9 +230,7 @@ class Animation extends ThreeAbstract {
             });
         })
             .then(() => this.zoomInFinished = true)
-            .then(() => this.control.enableZoom = true)
-            .then(() => this.planet.aboutMe.zoomIn())
-            .then(() => this.planet.myWork.zoomIn())
+        // .then(() => this.control.enableZoom = true)
     }
 
     private zoomInHelper(index: number, isFinished: boolean, resolver: Function, easeConfig) {
@@ -259,9 +261,6 @@ class Animation extends ThreeAbstract {
         }
     }
 
-    private lookAt() {
-        this.camera.lookAt(this.mainItem?.position ?? 0, 0, 0);
-    }
 
     private cameraRotation() {
 
@@ -276,6 +275,26 @@ class Animation extends ThreeAbstract {
 
     }
 
+    private lookAt() {
+        // const main = getMain();
+
+        // if (main) {
+        //     main.lookAt(this.camera.position);
+        // }
+    }
+
+    zoomInOnSection(section: 'myWork' | 'aboutMe') {
+        return () => {
+            const planet = this.planet;
+            const section3d = (planet[section as keyof Planet] as MyWork3D | AboutMe3D);
+            // section3d.group.add(this.camera);
+            this.zoomInFinished = false;
+            return section3d.zoomIn()
+                .then(() => this.zoomInFinished = true)
+
+        }
+    }
+
 
     protected mainLoop() {
 
@@ -283,7 +302,10 @@ class Animation extends ThreeAbstract {
 
         this.lookAt();
 
+        this.updateLighting();
+
         this.control.update();
+        
         this.renderer.render(this.scene, this.camera)
 
         if (this.shouldRan) {
@@ -304,8 +326,10 @@ class Animation extends ThreeAbstract {
 
         window.addEventListener('mousemove', ({ movementX, movementY }) => {
 
-            this.camera.position.x -= movementX / 250;
-            this.camera.position.y -= movementY / 250;
+            if (this.zoomInFinished) {
+                this.camera.position.x -= movementX / 250;
+                this.camera.position.y -= movementY / 250;
+            }
 
         })
 
@@ -321,25 +345,9 @@ class Animation extends ThreeAbstract {
 
     }
 
-
-    zoom(delta: number) {
-
-        const z = this.camera.position.z + delta;
-        if ((z > 500 && delta > 0) || (z <= (this.maxZoom) && delta < 0)) return;
-
-        this.camera.position.x += delta;
-        this.camera.position.y += delta;
-        this.camera.position.z += delta;
-
-        setTimeout(() => {
-
-            this.directionalLightUp.position.x = this.camera.position.x;
-            this.directionalLightUp.position.y = this.camera.position.y;
-            this.directionalLightUp.position.z = this.camera.position.z;
-
-        }, 250);
+    private updateLighting() {
+        this.directionalLightUp.position.copy(this.camera.position);
     }
-
 }
 
 
