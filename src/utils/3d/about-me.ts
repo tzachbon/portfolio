@@ -74,19 +74,15 @@ class AboutMe3D extends ThreeAbstract {
             ),
 
         };
-        const minDistance = this.control.minDistance;
-        this.control.minDistance = 10;
-
 
         let startTime = Date.now();
-        this.control.enableZoom = false
+        // this.control.enableZoom = false
         return new Promise((res, rej) => {
             this.zoomInHelper(isFinished, res, {
                 duration,
                 startPosition,
                 endPosition,
                 startTime,
-                minDistance,
             });
         })
 
@@ -103,19 +99,11 @@ class AboutMe3D extends ThreeAbstract {
         const elapsed = Date.now() - startTime;
 
         if (elapsed < duration) {
-            // this.parent.rotation.x = easeInSine(elapsed, startPosition.x, endPosition.x, duration);
-            // this.parent.rotation.y = easeInSine(elapsed, startPosition.y, endPosition.y, duration);
-            // this.parent.rotation.z = easeInSine(elapsed, startPosition.z, endPosition.z, duration);
             this.camera.position.set(
                 easeInOutCubic(elapsed, startPosition.vector.x, endPosition.vector.x - startPosition.vector.x, duration),
                 easeInOutCubic(elapsed, startPosition.vector.y, endPosition.vector.y - startPosition.vector.y, duration),
                 easeInOutCubic(elapsed, startPosition.vector.z, endPosition.vector.z - startPosition.vector.z, duration)
             )
-
-
-            console.log(this.camera.position, endPosition.vector);
-
-
 
 
             requestAnimationFrame(this.zoomInHelper.bind(this, isFinished, resolver, easeConfig));

@@ -4,6 +4,14 @@
   min-width: 100vw;
   min-height: 100vh;
 
+  .loaded {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    transition: all 0.5s ease-in-out;
+  }
+
   header {
     @include flex-column;
     pointer-events: none;
@@ -13,6 +21,7 @@
     @include animation(softFromTop 0.5s 0.9s $easing both);
     padding: 1rem;
     font-size: 7.2rem;
+    z-index: 2;
 
     @media #{$media-desktop-small} {
       font-size: 6.2rem;
@@ -23,30 +32,49 @@
     }
 
     @media #{$media-phone-landscape} {
-      font-size: 4.2rem;
+      font-size: 4rem;
+    }
+  }
+
+  .button-container {
+    position: absolute;
+    @include flex-row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    top: 10%;
+
+    & > * {
+      margin-right: 5rem;
     }
 
-    // &:after {
-    //     @include pseudo;
-    //     background: linear-gradient(90deg, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 50%);
-    //     @include animation(moveBg .7s 2s $easing both);
-    //     background-size: 200% 100%;
-    // }
+    .about-me,
+    .my-work {
+      @include animation(softFromTop 0.5s 0.7s $easing both);
+      width: 25rem;
+      padding: 15px;
+      background: rgba(black, 0.2);
+      font-weight: 400;
+    }
   }
+  @media #{$media-phone-landscape} {
+    .button-container {
+      top: initial;
+      height: 100%;
+      .about-me,
+      .my-work {
+        position: absolute;
+        width: 80%;
+      }
 
-  .about-me,
-  .my-work {
-    position: absolute;
-    width: 80%;
-    @include animation(softFromTop 0.5s 0.7s $easing both);
-  }
+      .about-me {
+        top: 10%;
+      }
 
-  .about-me {
-    top: 10%;
-  }
-
-  .my-work {
-    bottom: 10%;
+      .my-work {
+        bottom: 10%;
+      }
+    }
   }
 }
 

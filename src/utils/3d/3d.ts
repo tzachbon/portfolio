@@ -4,38 +4,30 @@ import * as THREE from 'three';
 import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader';
 import randomInRange from '../randomInRange';
 import { ThreeAbstract } from './3d-abstract';
+import AboutMe3D from './about-me';
+import MyWork3D from './my-work';
 import OrbitControl from './orbit-control';
 import { Planet } from './planet';
 import { Stars } from './stars';
 import createMainText from './text';
-import MyWork3D from './my-work';
-import AboutMe3D from './about-me';
-import { getMain, setMain } from './main';
+import { DESKTOP } from '../mobile';
 class Animation extends ThreeAbstract {
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
     private renderer: THREE.WebGLRenderer;
-    private isDragging = false;
     private loadingManager: THREE.LoadingManager;
     private directionalLightUp: THREE.DirectionalLight;
     public planet: Planet;
-    private main: THREE.Mesh | THREE.Group;
     private zoomInFinished = true;
-    private readonly maxZoom = this.isMobile ? 85 : 60;
+    private readonly maxZoom = !DESKTOP ? 85 : 60;
     private text: THREE.Group;
     public tween;
     public control: typeof OrbitControl;
     public mainItem: THREE.Mesh | THREE.Group;
     public rotationMap = new Map<string, THREE.Mesh | THREE.Light | THREE.Group>();
     rotationSpeed = 0.001;
-    private tree: THREE.Mesh;
     public loadingStatus = new BehaviorSubject<number>(0)
     private stars: Stars;
-    private cameraPos = {
-        x: -15,
-        y: -5,
-        z: 20
-    };
 
 
 
@@ -82,7 +74,7 @@ class Animation extends ThreeAbstract {
         this.control = new OrbitControl(this.camera, this.domParent);
         this.control.enableDamping = true;
         this.control.enableRotate = false;
-        this.control.enableZoom = false;
+        this.control.enableZoom = true;
         this.control.enablePan = false;
         this.control.minDistance = this.maxZoom;
         this.control.maxDistance = 500;
@@ -119,6 +111,7 @@ class Animation extends ThreeAbstract {
 
         this.camera.position.z = 1000;
         this.camera.position.y = 25;
+        this.camera.castShadow = false;
         this.scene.add(this.camera)
     }
 
@@ -179,7 +172,6 @@ class Animation extends ThreeAbstract {
 
     private appendPlanet() {
         this.planet = new Planet(this.loadingManager, this.scene, this.control, this.renderer, this.camera);
-        this.main = this.planet.star;
     }
 
     private appendText() {
@@ -275,13 +267,6 @@ class Animation extends ThreeAbstract {
 
     }
 
-    private lookAt() {
-        // const main = getMain();
-
-        // if (main) {
-        //     main.lookAt(this.camera.position);
-        // }
-    }
 
     zoomInOnSection(section: 'myWork' | 'aboutMe') {
         return () => {
@@ -300,12 +285,10 @@ class Animation extends ThreeAbstract {
 
         this.cameraRotation();
 
-        this.lookAt();
-
         this.updateLighting();
 
         this.control.update();
-        
+
         this.renderer.render(this.scene, this.camera)
 
         if (this.shouldRan) {

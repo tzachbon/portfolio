@@ -5,6 +5,7 @@ import { useStores } from '../../store/context';
 import Animation from '../../utils/3d/3d';
 import { DESKTOP } from '../../utils/mobile';
 import './Main.scss';
+import Button from '../Button/Button';
 interface Props {
 
 }
@@ -16,12 +17,22 @@ const Main = (props: Props) => {
         isZoomed: false,
         opacity: 1,
         isZoomEnded: false,
+        loaded: 0,
+        isLoaded() {
+            return this.loaded >= 100;
+        }
     }))
     const { store } = useStores();
 
     useEffect(() => {
 
         store.animation = new Animation(mainRef.current, !DESKTOP);
+
+        const loading$ = store.animation
+            .loadingStatus
+            .subscribe(loaded => localStore.loaded = loaded)
+
+        return loading$.unsubscribe;
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -52,6 +63,13 @@ const Main = (props: Props) => {
 
     return (
         <div className='main' onClick={onMainClicked} ref={mainRef}>
+            {
+                !localStore.isLoaded() && (
+                    <div className="loaded" style={{
+                        background: `linear-gradient(0deg, rgba(0,0,0, 1) ${localStore.loaded}%), rgba(255, 255, 255, 1) ${localStore.loaded}%`
+                    }}></div>
+                )
+            }
             <header >
                 <h1 style={{
                     opacity: localStore.opacity
@@ -68,14 +86,14 @@ const Main = (props: Props) => {
 
             {
                 localStore.isZoomEnded && (
-                    <>
-                        <button onClick={store.animation.zoomInOnSection('aboutMe')} className='Button Button-white about-me'>
+                    <div className='button-container'>
+                        <Button white to='/about-me' onClick={store.animation.zoomInOnSection('aboutMe')} className='about-me'>
                             About Me
-                        </button>
-                        <button onClick={store.animation.zoomInOnSection('myWork')} className='Button Button-white my-work'>
+                        </Button>
+                        <Button white to='/my-work' onClick={store.animation.zoomInOnSection('myWork')} className='my-work'>
                             My Work
-                        </button>
-                    </>
+                        </Button>
+                    </div>
                 )
             }
 
