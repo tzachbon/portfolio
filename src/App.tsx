@@ -7,7 +7,7 @@ import AboutMe from './components/AboutMe/AboutMe';
 
 function App() {
   return (
-    <div className="app">
+    <div className='app RootComponent'>
       <Switch>
         <Route path='/about-me' component={AboutMe} exact />
       </Switch>
