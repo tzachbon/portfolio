@@ -71,7 +71,6 @@ class Rocks3D extends ThreeAbstract {
                     rock.geometry.center();
                     rock.scale.set(12, 12, 12);
                     rock.castShadow = true;
-                    rock.receiveShadow = true;
                     rock.rotateX(-1.81);
                     (rock.material as THREE.MeshPhongMaterial).color = new THREE.Color('#74b9ff');
                     this.setRockPosition(rock);

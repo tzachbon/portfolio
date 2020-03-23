@@ -2,9 +2,10 @@
 
 $strip-height: 206px;
 //ContactUs
-.about-me {
+.AboutMe {
   padding-bottom: $strip-height;
   background: linear-gradient(to bottom left, #4c496e, $grey-dark);
+  overflow: hidden;
   &.form-page {
     h1 {
       transition: all 0.2s ease-in-out;
@@ -63,113 +64,18 @@ $strip-height: 206px;
   }
 
   .half-bg:after {
-    background-color: darken(#3f3969, 0%);
+    background-color: darken(rgba(#252235, 0.8), 0%);
   }
 
-  .button-container {
-    @include display-flex;
-    @include flex-direction(column);
-    @include justify-content(center);
-    @include align-items(center);
-
-    .bottom-text {
-      font-size: 18px;
-      font-weight: 300;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: normal;
-      letter-spacing: normal;
-      color: #ffffff;
-      transform: translateY(1.5rem);
-
-      a {
-        font-size: 18px;
-        font-weight: 300;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
-        letter-spacing: normal;
-        color: #1de7de;
-        border-bottom: 1px solid #1de7de;
-
-        &:focus,
-        &:active,
-        &:hover {
-          color: inherit;
-        }
-      }
-    }
-  }
-
-  .logo-strip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: $strip-height;
-    padding: 2% 15%;
-    width: 100%;
-    z-index: 1;
-    background-color: #345a71;
-
-    .top,
-    .bottom {
-      @include flex-center();
-      @include justify-content(space-around);
-      flex-wrap: nowrap;
-      @include animation(bottomIn 0.5s $easing 100ms both);
-      img {
-        margin: 0 0.1rem;
-        display: block;
-        padding-bottom: 22px;
-        max-width: 290px;
-      }
+  .half-section {
+    overflow: hidden;
+    p {
+      font-size: 2rem;
+      color: white;
     }
 
-    .bottom {
-      @include animation-delay(0.5s);
-    }
-  }
-}
-
-@media (max-width: 550px) {
-  $mobile-height: 85vh;
-  .OnBoarding {
-    padding-bottom: $mobile-height;
-    .logo-strip {
-      padding: 2rem 10rem;
-      height: $mobile-height;
-
-      .top,
-      .bottom {
-        flex-wrap: wrap;
-      }
-
-      img {
-        &:not(:last-child) {
-          margin-bottom: 1rem;
-        }
-      }
-    }
-  }
-}
-
-@media (min-width: 550px) {
-  .OnBoarding {
-    &.form-page {
-      &.submitted {
-        .submitted-section {
-          text-align: left;
-          width: 50%;
-          margin-left: auto;
-        }
-        h1 {
-          padding-right: 14rem;
-          text-align: right;
-          span {
-            min-width: 100%;
-          }
-        }
-      }
+    @media #{$media-phone-landscape} {
+      padding-bottom: 10rem;
     }
   }
 }

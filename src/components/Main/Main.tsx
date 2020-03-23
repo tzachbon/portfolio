@@ -3,18 +3,15 @@ import { observer, useLocalStore } from 'mobx-react';
 import React, { useEffect, useRef } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useStores } from '../../store/context';
+import { SECTION_ROUTES } from './../../store/store';
 import Animation from '../../utils/3d/3d';
 import { DESKTOP } from '../../utils/mobile';
 import Button from '../Button/Button';
 import './Main.scss';
 import ClassNames from 'classnames';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 
 interface Props extends RouteComponentProps {}
-
-const SECTION_ROUTES = {
-  aboutMe: 'about-me',
-  myWork: 'my-work'
-};
 
 const Main: React.FC<Props> = ({ history }) => {
   const mainRef = useRef<HTMLDivElement>(null);
@@ -59,12 +56,15 @@ const Main: React.FC<Props> = ({ history }) => {
     }
   };
 
-  const navigateBySection = (sectionName: 'aboutMe' | 'myWork') => {
+  const navigateBySection = (sectionName: keyof typeof SECTION_ROUTES) => {
     return () => {
       state.isNavitionInProgress = true;
       store.animation.zoomInOnSection(sectionName).then(() => {
-        history.push(SECTION_ROUTES[sectionName]);
-        state.isNavitionInProgress = false;
+        const route = SECTION_ROUTES[sectionName];
+        if (route) {
+          history.push(route);
+          state.isNavitionInProgress = false;
+        }
       });
     };
   };
@@ -98,24 +98,49 @@ const Main: React.FC<Props> = ({ history }) => {
 
       {state.isZoomEnded && (
         <div className='button-container'>
-          <Button
-            white
-            onClick={navigateBySection('aboutMe')}
-            className={ClassNames('about-me', {
-              disable: state.isNavitionInProgress
-            })}
-          >
-            About Me
-          </Button>
-          <Button
-            white
-            onClick={navigateBySection('myWork')}
-            className={ClassNames('my-work', {
-              disable: state.isNavitionInProgress
-            })}
-          >
-            My Work
-          </Button>
+          <div className='top'>
+            <Button
+              white
+              onClick={navigateBySection('aboutMe')}
+              className={ClassNames('about-me', {
+                disable: state.isNavitionInProgress
+              })}
+            >
+              <div className='button-content'>
+                <LoadingSpinner />
+                <span className='label'>About Me</span>
+              </div>
+            </Button>
+            <Button
+              white
+              onClick={navigateBySection('myWork')}
+              className={ClassNames('my-work', {
+                disable: state.isNavitionInProgress
+              })}
+            >
+              <span className='label'>My Work</span>
+            </Button>
+          </div>
+          <div className='bottom'>
+            <Button
+              white
+              onClick={navigateBySection('workFlow')}
+              className={ClassNames('work-flow', {
+                disable: state.isNavitionInProgress
+              })}
+            >
+              <span className='label'>My Work Flow</span>
+            </Button>
+            <Button
+              white
+              onClick={navigateBySection('contactMe')}
+              className={ClassNames('contact-me', {
+                disable: state.isNavitionInProgress
+              })}
+            >
+              <span className='label'>Contact Me</span>
+            </Button>
+          </div>
         </div>
       )}
     </div>

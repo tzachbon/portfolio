@@ -1,0 +1,25 @@
+@import './../../index.scss';
+
+.LoadingSpinner {
+  position: relative;
+  @include flex-center;
+  transform: scale(0.6);
+  max-width: 2rem;
+  max-height: 2rem;
+
+  .MuiFab-root {
+    background: transparent;
+
+    .percentage {
+      font-size: 2rem;
+    }
+  }
+
+  .MuiCircularProgress-root {
+    position: absolute;
+
+    circle {
+      stroke: white;
+    }
+  }
+}

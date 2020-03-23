@@ -15,7 +15,7 @@ interface Props {
     href?: string,
     target?: string,
     withIcon?: boolean,
-    submit?: boolean
+    submit?: boolean,
 }
 
 const Button: React.FC<Props> = (props) => {

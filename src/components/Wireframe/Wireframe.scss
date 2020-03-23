@@ -2,13 +2,13 @@
 
 .wireframe {
   position: absolute;
-  bottom: -40vh;
-  right: -10vw;
-  opacity: 0.2;
+  bottom: -25%;
+  right: -10%;
+  pointer-events: none;
+  z-index: 50;
 
   @media #{$media-phone-landscape} {
-    bottom: -60vh;
-    right: -70vw;
+    right: -70%;
   }
 
   &.fadeIn {
@@ -20,7 +20,7 @@
     @include flex-center;
 
     @media #{$media-phone-landscape} {
-      animation: rightToLeft 60s linear infinite;
+      animation: rightToLeft 50s linear infinite;
     }
   }
 }

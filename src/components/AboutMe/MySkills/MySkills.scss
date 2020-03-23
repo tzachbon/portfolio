@@ -1,0 +1,107 @@
+@import './../../../index.scss';
+
+.mySkills {
+  @include flex-column;
+  @include box-shadow-2;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    @include box-shadow-3;
+  }
+  .progress {
+    position: relative;
+    height: 3rem;
+
+    &-bar {
+      height: 100%;
+
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        @include box-shadow-3;
+        height: 110%;
+      }
+
+      &.react {
+        background: rgba(#12a8c0, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(#12a8c0, 0.5);
+          border: 2px solid rgba(#12a8c0, 1);
+        }
+      }
+
+      &.rxjs {
+        background: rgba(165, 94, 234, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(165, 94, 234, 0.5);
+          border: 2px solid rgba(165, 94, 234, 1);
+        }
+      }
+
+      &.redux {
+        background: rgba(136, 84, 208, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(136, 84, 208, 0.5);
+          border: 2px solid rgba(136, 84, 208, 1);
+        }
+      }
+
+      &.angular {
+        background: rgba(235, 59, 90, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(235, 59, 90, 0.5);
+          border: 2px solid rgba(235, 59, 90, 1);
+        }
+      }
+
+      &.reactNative {
+        background: rgba(56, 103, 214, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(56, 103, 214, 0.5);
+          border: 2px solid rgba(56, 103, 214, 1);
+        }
+      }
+
+      &.nodeJs {
+        background: rgba(38, 222, 129, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(38, 222, 129, 0.5);
+          border: 2px solid rgba(38, 222, 129, 1);
+        }
+      }
+
+      &.mongodb {
+        background: rgba(32, 191, 107, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(32, 191, 107, 0.5);
+          border: 2px solid rgba(32, 191, 107, 1);
+        }
+      }
+
+      &.mobx {
+        background: rgba(255, 162, 40, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(255, 162, 40, 0.5);
+          border: 2px solid rgba(255, 162, 40, 1);
+        }
+      }
+
+      &.redux {
+        background: rgba(136, 84, 208, 0.3);
+        .MuiLinearProgress-bar {
+          background: rgba(136, 84, 208, 0.5);
+          border: 2px solid rgba(136, 84, 208, 1);
+        }
+      }
+    }
+
+    .title {
+      position: absolute;
+      top: 50%;
+      left: 5%;
+      transform: translateY(-50%);
+      font-size: 1.6rem;
+      font-weight: bold;
+      font-family: $font-body;
+    }
+  }
+}

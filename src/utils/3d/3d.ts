@@ -12,6 +12,7 @@ import { Stars } from './stars';
 import createMainText from './text';
 import { DESKTOP } from '../mobile';
 import { easeInOutCubic } from 'js-easing-functions';
+import { SECTION_ROUTES } from '../../store/store';
 
 class Animation extends ThreeAbstract {
   private scene: THREE.Scene;
@@ -264,9 +265,12 @@ class Animation extends ThreeAbstract {
     });
   }
 
-  zoomInOnSection(section: 'myWork' | 'aboutMe') {
+  zoomInOnSection(section: keyof typeof SECTION_ROUTES): Promise<any> {
     const planet = this.planet;
     const section3d = planet[section as keyof Planet] as MyWork3D | AboutMe3D;
+
+    if (!section3d) return this.resetRotation();
+
     this.zoomInFinished = false;
     return Promise.all([this.resetRotation(), section3d.zoomIn()]).then(
       () => (this.zoomInFinished = true)

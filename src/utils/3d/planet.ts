@@ -63,7 +63,6 @@ export class Planet extends ThreeAbstract {
             material.map = texture;
             // }
           });
-          this.star.receiveShadow = true;
           this.star.position.set(0, 0, 0);
 
           mtlLoader.load("assets/models/NatureFreePack1.mtl", materials => {
