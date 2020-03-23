@@ -1,17 +1,17 @@
-import { easeInSine } from "js-easing-functions";
-import { BehaviorSubject } from "rxjs";
-import * as THREE from "three";
-import { MTLLoader, OBJLoader } from "three-obj-mtl-loader";
-import randomInRange from "../randomInRange";
-import { ThreeAbstract } from "./3d-abstract";
-import AboutMe3D from "./about-me";
-import MyWork3D from "./my-work";
-import OrbitControl from "./orbit-control";
-import { Planet } from "./planet";
-import { Stars } from "./stars";
-import createMainText from "./text";
-import { DESKTOP } from "../mobile";
-import { easeInOutCubic } from "js-easing-functions";
+import { easeInSine } from 'js-easing-functions';
+import { BehaviorSubject } from 'rxjs';
+import * as THREE from 'three';
+import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader';
+import randomInRange from '../randomInRange';
+import { ThreeAbstract } from './3d-abstract';
+import AboutMe3D from './about-me';
+import MyWork3D from './my-work';
+import OrbitControl from './orbit-control';
+import { Planet } from './planet';
+import { Stars } from './stars';
+import createMainText from './text';
+import { DESKTOP } from '../mobile';
+import { easeInOutCubic } from 'js-easing-functions';
 
 class Animation extends ThreeAbstract {
   private scene: THREE.Scene;
@@ -130,10 +130,10 @@ class Animation extends ThreeAbstract {
     let objLoader = new OBJLoader(this.loadingManager);
     let mtlLoader = new MTLLoader();
 
-    mtlLoader.load("assets/models/clouds/cloud.mtl", materials => {
+    mtlLoader.load('assets/models/clouds/cloud.mtl', materials => {
       materials.preload();
       objLoader.setMaterials(materials);
-      objLoader.load("assets/models/clouds/cloud.obj", (group: THREE.Group) => {
+      objLoader.load('assets/models/clouds/cloud.obj', (group: THREE.Group) => {
         for (let i = 0; i < 20; i++) {
           const cloud = group.clone();
 
@@ -264,19 +264,16 @@ class Animation extends ThreeAbstract {
     });
   }
 
-  zoomInOnSection(section: "myWork" | "aboutMe") {
-    return () => {
-      const planet = this.planet;
-      const section3d = planet[section as keyof Planet] as MyWork3D | AboutMe3D;
-      this.zoomInFinished = false;
-      return Promise.all([this.resetRotation(), section3d.zoomIn()]).then(
-        () => (this.zoomInFinished = true)
-      );
-    };
+  zoomInOnSection(section: 'myWork' | 'aboutMe') {
+    const planet = this.planet;
+    const section3d = planet[section as keyof Planet] as MyWork3D | AboutMe3D;
+    this.zoomInFinished = false;
+    return Promise.all([this.resetRotation(), section3d.zoomIn()]).then(
+      () => (this.zoomInFinished = true)
+    );
   }
 
   resetRotation(duration = 2000) {
-
     let isFinished = false;
 
     const startPosition = {
@@ -360,7 +357,7 @@ class Animation extends ThreeAbstract {
 
   private initEventListeners() {
     window.addEventListener(
-      "resize",
+      'resize',
       e => {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
@@ -370,7 +367,7 @@ class Animation extends ThreeAbstract {
       false
     );
 
-    window.addEventListener("mousemove", ({ movementX, movementY }) => {
+    window.addEventListener('mousemove', ({ movementX, movementY }) => {
       if (this.zoomInFinished) {
         this.camera.position.x -= movementX / 250;
         this.camera.position.y -= movementY / 250;

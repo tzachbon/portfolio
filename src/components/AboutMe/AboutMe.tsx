@@ -5,6 +5,7 @@ import BGImg from '../BGImg/BGImg';
 import './AboutMe.scss';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
+import Wireframe from '../Wireframe/Wireframe';
 
 interface Props {
   className;
@@ -16,6 +17,7 @@ const AboutMe: React.FC<Props> = ({ className }) => {
   return (
     <div className={className}>
       <BGImg cover className='half-bg' src='assets/images/about-me.jpg' />
+      <Wireframe fadeIn />
       <Button white to='/' className='go-back'>
         <Icon type='arrow-right' />
         <span>Go Back</span>

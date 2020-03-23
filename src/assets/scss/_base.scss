@@ -216,12 +216,16 @@ select {
   text-decoration: line-through;
 }
 
+.disable {
+  pointer-events: none;
+}
+
+
 
 @include keyframes(slideHeader) {
   0% {
     text-align: left;
   }
-  
 
   100% {
     text-align: right;
@@ -598,6 +602,7 @@ img {
   padding-top: 15vh;
   position: relative;
   z-index: 0;
+  @include animation(softFromBottom 0.7s $easing both);
 
   @media #{$media-tablet-portrait} {
     padding-top: 0;
