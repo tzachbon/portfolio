@@ -221,6 +221,20 @@ select {
 }
 
 
+@include keyframes(rightToLeft) {
+  0%,
+  50% {
+    @include transform(translateX(0rem));
+  }
+
+  25% {
+    @include transform(translateX(-5rem));
+  }
+
+  75% {
+    @include transform(translateX(5rem));
+  }
+}
 
 @include keyframes(slideHeader) {
   0% {

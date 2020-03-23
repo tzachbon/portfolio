@@ -4,13 +4,11 @@
   position: absolute;
   bottom: -40vh;
   right: -10vw;
-  transform: scale(1);
   opacity: 0.2;
 
   @media #{$media-phone-landscape} {
     bottom: -60vh;
     right: -70vw;
-    animation: rightToLeft 0.7s $easing forwards infinite;
   }
 
   &.fadeIn {
@@ -20,22 +18,10 @@
   &__lines {
     position: relative;
     @include flex-center;
+
+    @media #{$media-phone-landscape} {
+      animation: rightToLeft 60s linear infinite;
+    }
   }
 }
 
-@keyframes rightToLeft {
-  0% {
-    @include transform(translateX(0rem));
-  }
-  50% {
-    @include transform(translateX(0rem));
-  }
-
-  25% {
-    @include transform(translateX(-5rem));
-  }
-
-  75% {
-    @include transform(translateX(5rem));
-  }
-}
