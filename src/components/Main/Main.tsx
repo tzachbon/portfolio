@@ -10,6 +10,7 @@ import Button from '../Button/Button';
 import './Main.scss';
 import ClassNames from 'classnames';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import { startCase } from 'lodash';
 
 interface Props extends RouteComponentProps {}
 
@@ -21,6 +22,11 @@ const Main: React.FC<Props> = ({ history }) => {
     isZoomEnded: false,
     loaded: 0,
     isNavitionInProgress: false,
+    loadingSection: '',
+    buttons: {
+      top: ['aboutMe', 'myWork'],
+      bottom: ['workFlow', 'contactMe']
+    },
     isLoaded() {
       return this.loaded >= 100;
     }
@@ -58,12 +64,14 @@ const Main: React.FC<Props> = ({ history }) => {
 
   const navigateBySection = (sectionName: keyof typeof SECTION_ROUTES) => {
     return () => {
+      state.loadingSection = sectionName;
       state.isNavitionInProgress = true;
       store.animation.zoomInOnSection(sectionName).then(() => {
         const route = SECTION_ROUTES[sectionName];
         if (route) {
           history.push(route);
           state.isNavitionInProgress = false;
+          state.loadingSection = '';
         }
       });
     };
@@ -98,49 +106,28 @@ const Main: React.FC<Props> = ({ history }) => {
 
       {state.isZoomEnded && (
         <div className='button-container'>
-          <div className='top'>
-            <Button
-              white
-              onClick={navigateBySection('aboutMe')}
-              className={ClassNames('about-me', {
-                disable: state.isNavitionInProgress
-              })}
+          {Object.entries(state.buttons).map(([containerName, buttons], i) => (
+            <div
+              key={`containerName_${containerName}__${i}`}
+              className={containerName}
             >
-              <div className='button-content'>
-                <LoadingSpinner />
-                <span className='label'>About Me</span>
-              </div>
-            </Button>
-            <Button
-              white
-              onClick={navigateBySection('myWork')}
-              className={ClassNames('my-work', {
-                disable: state.isNavitionInProgress
-              })}
-            >
-              <span className='label'>My Work</span>
-            </Button>
-          </div>
-          <div className='bottom'>
-            <Button
-              white
-              onClick={navigateBySection('workFlow')}
-              className={ClassNames('work-flow', {
-                disable: state.isNavitionInProgress
-              })}
-            >
-              <span className='label'>My Work Flow</span>
-            </Button>
-            <Button
-              white
-              onClick={navigateBySection('contactMe')}
-              className={ClassNames('contact-me', {
-                disable: state.isNavitionInProgress
-              })}
-            >
-              <span className='label'>Contact Me</span>
-            </Button>
-          </div>
+              {buttons.map((buttonName: keyof typeof SECTION_ROUTES, i) => (
+                <Button
+                  key={`button__${buttonName}__${i}`}
+                  white
+                  onClick={navigateBySection(buttonName)}
+                  className={ClassNames(SECTION_ROUTES[buttonName], {
+                    disable: state.isNavitionInProgress
+                  })}
+                >
+                  <div className='button-content'>
+                    {state.loadingSection === buttonName && <LoadingSpinner />}
+                    <span className='label'>{startCase(buttonName)}</span>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          ))}
         </div>
       )}
     </div>

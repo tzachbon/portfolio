@@ -35,9 +35,7 @@ const AboutMe: React.FC<Props> = ({ className }) => {
             <p>
               My Name Is Tzach Bonfil And I Am A Full-Stack Developer For
               {` ${diffYears.toFixed(1)} `}
-              Years, Im Working With The Top Tear Technologies To Bring To The
-              Table The Better Native / Web Applications And You Can See On The
-              Market!
+              Years, Im Working With The Top Tear Technologies You Can See In The Development Community
             </p>
           </article>
 
