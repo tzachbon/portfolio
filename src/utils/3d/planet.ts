@@ -7,6 +7,7 @@ import { toRadians } from "./math";
 import MyWork3D from "./my-work";
 import OrbitControl from "./orbit-control";
 import Rocks3D from "./rocks";
+import ContactMe3D from "./contact-me";
 
 export class Planet extends ThreeAbstract {
   star: THREE.Group;
@@ -25,6 +26,7 @@ export class Planet extends ThreeAbstract {
   finalRotationY: number;
   aboutMe: AboutMe3D;
   myWork: MyWork3D;
+  contactMe: ContactMe3D;
   clouds: THREE.Group[] = [];
   rocks: Rocks3D;
 
@@ -78,6 +80,7 @@ export class Planet extends ThreeAbstract {
                 this.appendRocks();
                 this.createAboutMe();
                 this.createMyWork();
+                this.createContactMe();
                 this.control.target = this.star.position;
               }
             );
@@ -120,6 +123,17 @@ export class Planet extends ThreeAbstract {
 
   createAboutMe() {
     this.aboutMe = new AboutMe3D(
+      this.loadingManager,
+      this.scene,
+      this.control,
+      this.renderer,
+      this.camera,
+      this.star
+    );
+  }
+
+  createContactMe() {
+    this.contactMe = new ContactMe3D(
       this.loadingManager,
       this.scene,
       this.control,

@@ -200,14 +200,9 @@ class Animation extends ThreeAbstract {
 
     let startTime = Date.now();
 
-    this.camera.remove(this.text);
-    this.text &&
-      this.text.position.set(
-        this.directionalLightUp.position.x - 2,
-        this.directionalLightUp.position.y - 2,
-        this.directionalLightUp.position.z - 42
-      );
     this.scene.add(this.text);
+
+    this.control.enableZoom = false;
 
     return new Promise((res, rej) => {
       this.zoomInHelper(i, isFinished, res, {
@@ -216,8 +211,9 @@ class Animation extends ThreeAbstract {
         endPosition,
         startTime
       });
-    }).then(() => (this.zoomInFinished = true));
-    // .then(() => this.control.enableZoom = true)
+    })
+      .then(() => (this.zoomInFinished = true))
+      .then(() => (this.control.enableZoom = true));
   }
 
   private zoomInHelper(
@@ -271,10 +267,12 @@ class Animation extends ThreeAbstract {
 
     if (!section3d) return this.resetRotation();
 
+    this.control.enableZoom = false;
+
     this.zoomInFinished = false;
-    return Promise.all([this.resetRotation(), section3d.zoomIn()]).then(
-      () => (this.zoomInFinished = true)
-    );
+    return Promise.all([this.resetRotation(), section3d.zoomIn()])
+      .then(() => (this.zoomInFinished = true))
+      .then(() => (this.control.enableZoom = true));
   }
 
   resetRotation(duration = 2000) {
