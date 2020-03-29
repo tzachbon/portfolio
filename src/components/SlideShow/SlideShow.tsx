@@ -1,10 +1,10 @@
-import React, { useLayoutEffect, useRef } from 'react';
-import { observer, useLocalStore } from 'mobx-react';
-import Swiper from 'react-id-swiper';
-import './SlideShow.scss';
 import ClassNames from 'classnames';
+import { observer, useLocalStore } from 'mobx-react';
+import React, { useLayoutEffect, useRef } from 'react';
+import Swiper from 'react-id-swiper';
+import { Subscription } from 'rxjs';
 import { useStores } from '../../store/context';
-
+import './SlideShow.scss';
 export interface Slide {
   name: string;
   images: string[];
@@ -18,12 +18,18 @@ interface Props {
 }
 
 const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
+  const containerRef = useRef<HTMLDivElement>();
 
   const { slider } = useStores();
 
-  const state: { oldActiveNode: Element } = useLocalStore(() => ({
-    oldActiveNode: null
-  }));
+  const state: { oldActiveNode: Element; activeId: string } = useLocalStore(
+    () => ({
+      oldActiveNode: null,
+      get activeId() {
+        return this.oldActiveNode?.name;
+      }
+    })
+  );
   className = ClassNames(className, 'SlideShow');
 
   const setActiveRef = () => {
@@ -53,13 +59,31 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
       });
     }
 
-    const slideActions$ = slider.slideAction.subscribe(action => {
-    });
+    const subscriptions = new Subscription();
+
+    const slideActions$ = slider.slideAction.subscribe(action =>
+      handleSlideActionChange(action)
+    );
+
+    subscriptions.add(slideActions$);
 
     return () => {
-      slideActions$.unsubscribe();
+      subscriptions.unsubscribe();
     };
   }, []);
+
+  const handleSlideActionChange = (action: 'next' | 'previous') => {
+    const { swiper } = document.querySelector('.swiper-container') as any;
+
+    switch (action) {
+      case 'next':
+        swiper?.slideNext();
+        break;
+      case 'previous':
+        swiper?.slidePrev();
+        break;
+    }
+  };
 
   const params = {
     effect: 'cube',
@@ -76,8 +100,8 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
   };
 
   return (
-    <div className={className}>
-      <Swiper  {...params}>
+    <div ref={containerRef} className={className}>
+      <Swiper {...params}>
         {slider.slides.map(({ name, images }) => (
           <div
             key={`${name}__${images[0]}`}

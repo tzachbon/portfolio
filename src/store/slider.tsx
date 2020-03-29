@@ -87,6 +87,11 @@ class SliderStore {
   goPrevious = () => {
     this.slideAction$.next('previous');
   };
+
+  @action
+  getIndexById = (id: string) => {
+    return this.slides.findIndex(({ name }) => id === name);
+  };
 }
 
 export default SliderStore;
