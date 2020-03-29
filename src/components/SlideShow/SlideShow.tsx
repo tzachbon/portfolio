@@ -5,6 +5,7 @@ import Swiper from 'react-id-swiper';
 import { Subscription } from 'rxjs';
 import { useStores } from '../../store/context';
 import './SlideShow.scss';
+import { DESKTOP } from '../../utils/mobile';
 export interface Slide {
   name: string;
   images: string[];
@@ -61,9 +62,19 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
 
     const subscriptions = new Subscription();
 
-    const slideActions$ = slider.slideAction.subscribe(action =>
-      handleSlideActionChange(action)
-    );
+    const slideActions$ = slider.slideAction.subscribe(action => {
+      if (DESKTOP) {
+        handleSlideActionChange(action);
+      } else {
+        const slideShowRef = document.querySelector('.SlideShow');
+        if (slideShowRef) {
+          slideShowRef.scrollIntoView({ behavior: 'smooth' });
+        }
+        setTimeout(() => {
+          handleSlideActionChange(action);
+        }, 1000);
+      }
+    });
 
     subscriptions.add(slideActions$);
 

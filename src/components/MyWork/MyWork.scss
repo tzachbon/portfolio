@@ -18,5 +18,30 @@
     @include flex-row;
     align-items: flex-start;
     padding: 10rem 32rem;
+
+    @media #{$media-phone-landscape} {
+      flex-direction: column-reverse;
+      padding: initial;
+      max-width: 100vw;
+    }
+
+    .buttons-container {
+      @include flex-row;
+      @media #{$media-phone-landscape} {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 2rem;
+      }
+      & > * {
+        @include flex-row;
+        margin-right: 1rem;
+        width: 20rem;
+        justify-content: space-between;
+
+        @media #{$media-phone-landscape} {
+          width: 40vw;
+        }
+      }
+    }
   }
 }

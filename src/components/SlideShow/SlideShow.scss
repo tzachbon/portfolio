@@ -2,12 +2,17 @@
 
 .SlideShow {
   @include flex-row;
+
+  @media #{$media-phone-landscape} {
+    width: 100%;
+    @include flex-center;
+  }
   .swiper-container {
     width: 40rem;
     height: 85rem;
 
     @media #{$media-phone-landscape} {
-      width: 90vw;
+      width: 95vw;
       height: 100vh;
     }
     // position   : absolute;

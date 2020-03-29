@@ -860,7 +860,7 @@ img {
 
     h1,
     p {
-      margin-bottom: 35px;
+    margin-bottom: 35px;
       @media #{$media-tablet-portrait} {
         margin-bottom: 25px;
       }
@@ -892,4 +892,9 @@ img {
   > section {
     min-height: 100vh;
   }
+}
+
+
+.react-viewer-icon {
+  line-height: auto;
 }
