@@ -1,27 +1,38 @@
-import React from 'react';
-import { observer, useLocalStore } from 'mobx-react';
 import ClassNames from 'classnames';
+import { observer, useLocalStore } from 'mobx-react';
+import React from 'react';
 import BGImg from '../BGImg/BGImg';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
-import './MyWork.scss';
 import SlideShow, { Slide } from '../SlideShow/SlideShow';
+import './MyWork.scss';
+import ProjectSlide from './ProjectSlide/ProjectSlide';
+import { Subject } from 'rxjs';
 
 interface Props {
   className?: string;
 }
 
+interface State {
+  currentSlide: Slide | null;
+  show: boolean;
+}
+
 const MyWork: React.FC<Props> = ({ className }) => {
-
   className = ClassNames(className, 'MyWork', 'main-page', 'main-screen');
-  const state = useLocalStore(() => ({
-
-  }))
+  const state = useLocalStore<State>(() => ({
+    currentSlide: null,
+    show: true,
+  }));
 
   const onSlideChange = (slide: Slide) => {
-    console.log(slide);
-    
-  }
+    state.show = false;
+
+    setTimeout(() => {
+      state.currentSlide = slide;
+      state.show = !!slide;
+    }, 500);
+  };
 
   return (
     <div className={className}>
@@ -40,11 +51,9 @@ const MyWork: React.FC<Props> = ({ className }) => {
         </p>
       </header>
       <div className='subtitles-wrapper'></div>
-      <section className='main-content'>
+      <section className='main-content '>
+        <ProjectSlide show={state.show} slide={state.currentSlide} />
         <SlideShow onSlideChange={onSlideChange} />
-        <div className="slide-data">
-
-        </div>
       </section>
     </div>
   );

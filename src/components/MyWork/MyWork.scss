@@ -11,6 +11,12 @@
   .subtitles-wrapper {
     @include flex-row;
     width: 100%;
-    height: 35rem;
+    // height: 35rem;
+  }
+
+  .main-content {
+    @include flex-row;
+    align-items: flex-start;
+    padding: 10rem 32rem;
   }
 }
