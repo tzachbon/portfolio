@@ -27,6 +27,7 @@ class Animation extends ThreeAbstract {
   public tween;
   public control: typeof OrbitControl;
   public mainItem: THREE.Mesh | THREE.Group;
+  public enablePlanetRotation = true;
   public rotationMap = new Map<
     string,
     THREE.Mesh | THREE.Light | THREE.Group

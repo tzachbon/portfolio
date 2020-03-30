@@ -14,7 +14,7 @@ import { startCase } from 'lodash';
 
 interface Props extends RouteComponentProps {}
 
-const Main: React.FC<Props> = ({ history }) => {
+const Main: React.FC<Props> = ({ history, location }) => {
   const mainRef = useRef<HTMLDivElement>(null);
   const state = useLocalStore(() => ({
     isZoomed: false,
@@ -44,6 +44,10 @@ const Main: React.FC<Props> = ({ history }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    store.animation.enablePlanetRotation = location.pathname === '/';
+  }, [location]);
 
   const onMainClicked = () => {
     if (!state.isZoomed) {

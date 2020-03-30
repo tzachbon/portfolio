@@ -84,7 +84,8 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
   }, []);
 
   const handleSlideActionChange = (action: 'next' | 'previous') => {
-    const { swiper } = document.querySelector('.swiper-container') as any;
+    const { swiper } = (document.querySelector('.swiper-container') ||
+      {}) as any;
 
     switch (action) {
       case 'next':
@@ -99,11 +100,16 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
   const params = {
     effect: 'cube',
     grabCursor: true,
+    loop: true,
     cubeEffect: {
       shadow: true,
       slideShadows: true,
       shadowOffset: 20,
       shadowScale: 0.94
+    },
+    coverflowEffect: {
+      rotate: 30,
+      slideShadows: false
     },
     pagination: {
       el: '.swiper-pagination'

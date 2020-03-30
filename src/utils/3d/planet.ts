@@ -161,6 +161,8 @@ export class Planet extends ThreeAbstract {
   starRotation() {
     if (!this.star || !this.isDragging) return;
 
+    if (!this.parent.enablePlanetRotation) return;
+
     this.star.rotation.y += (this.targetRotationX - this.star.rotation.y) * 0.1;
     this.finalRotationY = this.targetRotationY - this.star.rotation.x;
 
