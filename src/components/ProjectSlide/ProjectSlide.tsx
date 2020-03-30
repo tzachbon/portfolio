@@ -4,10 +4,10 @@ import { startCase } from 'lodash';
 import { observer, useLocalStore } from 'mobx-react';
 import React, { useEffect } from 'react';
 import Viewer from 'react-viewer';
-import { useStores } from '../../../store/context';
-import Button from '../../Button/Button';
-import Icon from '../../Icon/Icon';
-import { Slide } from '../../SlideShow/SlideShow';
+import { useStores } from '../../store/context';
+import Button from '../Button/Button';
+import Icon from '../Icon/Icon';
+import { Slide } from '../SlideShow/SlideShow';
 import './ProjectSlide.scss';
 
 interface Props {
@@ -15,15 +15,6 @@ interface Props {
   slide: Slide | null;
   show?: boolean;
 }
-const imgSliderParams = {
-  spaceBetween: 10,
-  grabCursor: true,
-  pagination: {
-    el: '.swiper-pagination'
-  },
-  watchSlidesVisibility: true,
-  watchSlidesProgress: true
-};
 
 const ProjectSlide: React.FC<Props> = ({ className, slide, show }) => {
   const { slider } = useStores();
@@ -76,6 +67,7 @@ const ProjectSlide: React.FC<Props> = ({ className, slide, show }) => {
             <div className='project-images'>
               {slide.images.map((img, i) => (
                 <div
+                  key={`${img}___${i}`}
                   onClick={e => openImageModal(i)}
                   className='img'
                   style={{ backgroundImage: `url(${img})` }}
@@ -83,18 +75,14 @@ const ProjectSlide: React.FC<Props> = ({ className, slide, show }) => {
               ))}
             </div>
             <div className='buttons-container'>
-              {!state.isFirst && (
-                <Button white onClick={slider.goPrevious}>
-                  <Icon type='arrow-left' />
-                  <span>Previous</span>
-                </Button>
-              )}
-              {!state.isLast && (
-                <Button white onClick={slider.goNext}>
-                  <span>Next</span>
-                  <Icon type='arrow-right' />
-                </Button>
-              )}
+              <Button white onClick={slider.goPrevious}>
+                <Icon type='arrow-left' />
+                <span>Previous</span>
+              </Button>
+              <Button white onClick={slider.goNext}>
+                <span>Next</span>
+                <Icon type='arrow-right' />
+              </Button>
             </div>
             <Viewer
               visible={state.modalOpen}

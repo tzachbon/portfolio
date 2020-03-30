@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { Subject } from 'rxjs';
 
 const portalManagement1 = 'assets/images/my-work/portal-management/1.png';
@@ -92,6 +92,15 @@ class SliderStore {
   getIndexById = (id: string) => {
     return this.slides.findIndex(({ name }) => id === name);
   };
+
+  @computed
+  get swiper(): any {
+    const { swiper } = (document.querySelector('.swiper-container') as any) || {
+      swiper: null
+    };
+
+    return swiper;
+  }
 }
 
 export default SliderStore;

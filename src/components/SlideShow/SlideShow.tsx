@@ -84,8 +84,7 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
   }, []);
 
   const handleSlideActionChange = (action: 'next' | 'previous') => {
-    const { swiper } = (document.querySelector('.swiper-container') ||
-      {}) as any;
+    const { swiper } = slider;
 
     switch (action) {
       case 'next':

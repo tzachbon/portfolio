@@ -1,28 +1,37 @@
 import ClassNames from 'classnames';
 import { observer, useLocalStore } from 'mobx-react';
 import React from 'react';
+import { Subject } from 'rxjs';
+import { useStores } from '../../store/context';
+import { WithClassName } from '../../utils/types';
 import BGImg from '../BGImg/BGImg';
 import Button from '../Button/Button';
 import Icon from '../Icon/Icon';
+import ProjectSlide from '../ProjectSlide/ProjectSlide';
 import SlideShow, { Slide } from '../SlideShow/SlideShow';
+import ImgSlider from './../ImgSlider/ImgSlider';
 import './MyWork.scss';
-import ProjectSlide from './ProjectSlide/ProjectSlide';
-import { Subject } from 'rxjs';
-
-interface Props {
-  className?: string;
-}
+interface Props extends WithClassName {}
 
 interface State {
   currentSlide: Slide | null;
   show: boolean;
+  currentSlideIndex: number;
 }
 
 const MyWork: React.FC<Props> = ({ className }) => {
+  const { slider } = useStores();
+
   className = ClassNames(className, 'MyWork', 'main-page', 'main-screen');
   const state = useLocalStore<State>(() => ({
     currentSlide: null,
-    show: true,
+    sliderValue$: new Subject<number>(),
+    get currentSlideIndex() {
+      return slider.slides.findIndex(
+        ({ name }) => (this as State)?.currentSlide?.name === name
+      );
+    },
+    show: true
   }));
 
   const onSlideChange = (slide: Slide) => {
@@ -32,6 +41,14 @@ const MyWork: React.FC<Props> = ({ className }) => {
       state.currentSlide = slide;
       state.show = !!slide;
     }, 500);
+  };
+
+  const sliderValueChanged = (value: number | number[]) => {
+    console.log(value);
+
+    const { swiper } = slider;
+
+    swiper?.slideTo(value);
   };
 
   return (
@@ -50,8 +67,12 @@ const MyWork: React.FC<Props> = ({ className }) => {
           nulla, temporibus, dolorem quas!
         </p>
       </header>
-      <div className='subtitles-wrapper'></div>
-      <section className='main-content '>
+      <ImgSlider
+        slideLength={slider.slides.length}
+        currentStep={state.currentSlideIndex}
+        sliderValueChanged={sliderValueChanged}
+      />
+      <section className='main-content'>
         <ProjectSlide show={state.show} slide={state.currentSlide} />
         <SlideShow onSlideChange={onSlideChange} />
       </section>
