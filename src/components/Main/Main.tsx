@@ -40,7 +40,7 @@ const Main: React.FC<Props> = ({ history, location }) => {
       loaded => (state.loaded = loaded)
     );
 
-    return loading$.unsubscribe;
+    return () => loading$.unsubscribe();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

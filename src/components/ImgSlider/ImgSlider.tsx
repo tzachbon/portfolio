@@ -22,13 +22,13 @@ const ImgSlider: React.FC<Props> = React.forwardRef(
       valueChanged$: new Subject<number>()
     }));
 
-    useEffect(
-      () =>
-        state.valueChanged$
-          .pipe(distinctUntilChanged())
-          .subscribe(value => sliderValueChanged(value)).unsubscribe,
-      []
-    );
+    useEffect(() => {
+      const sub$ = state.valueChanged$
+        .pipe(distinctUntilChanged())
+        .subscribe(value => sliderValueChanged(value));
+
+      return () => sub$.unsubscribe();
+    }, []);
 
     return (
       <div className={className}>

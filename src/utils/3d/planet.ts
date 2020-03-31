@@ -1,13 +1,13 @@
-import * as THREE from "three";
-import { MTLLoader, OBJLoader } from "three-obj-mtl-loader";
-import Animation from "./3d";
-import { ThreeAbstract } from "./3d-abstract";
-import AboutMe3D from "./about-me";
-import { toRadians } from "./math";
-import MyWork3D from "./my-work";
-import OrbitControl from "./orbit-control";
-import Rocks3D from "./rocks";
-import ContactMe3D from "./contact-me";
+import * as THREE from 'three';
+import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader';
+import Animation from './3d';
+import { ThreeAbstract } from './3d-abstract';
+import AboutMe3D from './about-me';
+import { toRadians } from './math';
+import MyWork3D from './my-work';
+import OrbitControl from './orbit-control';
+import Rocks3D from './rocks';
+import ContactMe3D from './contact-me';
 
 export class Planet extends ThreeAbstract {
   star: THREE.Group;
@@ -54,9 +54,9 @@ export class Planet extends ThreeAbstract {
     let mtlLoader = new MTLLoader();
 
     new THREE.TextureLoader(this.loadingManager).load(
-      "./assets/images/Abstract_003_NRM.jpg",
+      './assets/images/Abstract_003_NRM.jpg',
       texture => {
-        objLoader.load("assets/models/Earth_Low.obj", (obj: THREE.Group) => {
+        objLoader.load('assets/models/Earth_Low.obj', (obj: THREE.Group) => {
           this.star = obj;
           this.star.scale.set(0.15, 0.15, 0.15);
           this.star.children.forEach((m: THREE.Mesh, i) => {
@@ -67,11 +67,11 @@ export class Planet extends ThreeAbstract {
           });
           this.star.position.set(0, 0, 0);
 
-          mtlLoader.load("assets/models/NatureFreePack1.mtl", materials => {
+          mtlLoader.load('assets/models/NatureFreePack1.mtl', materials => {
             materials.preload();
             objLoader.setMaterials(materials);
             objLoader.load(
-              "assets/models/NatureFreePack1.obj",
+              'assets/models/NatureFreePack1.obj',
               (group: THREE.Group) => {
                 this.star.children.forEach((m: THREE.Mesh, i) => {
                   m?.geometry?.center();
@@ -89,7 +89,7 @@ export class Planet extends ThreeAbstract {
       },
       xhr => {},
       xhr => {
-        console.log("An error happened");
+        console.log('An error happened');
       }
     );
   }
@@ -166,7 +166,6 @@ export class Planet extends ThreeAbstract {
     this.star.rotation.y += (this.targetRotationX - this.star.rotation.y) * 0.1;
     this.finalRotationY = this.targetRotationY - this.star.rotation.x;
 
-    
     if (this.star.rotation.x <= 1 && this.star.rotation.x >= -1) {
       this.star.rotation.x += this.finalRotationY * 0.1;
     }
@@ -194,55 +193,19 @@ export class Planet extends ThreeAbstract {
     this.windowHalfY = window.innerHeight / 2;
   }
 
-  onMove = e => {
-    if (e.touches) {
-      const [touch] = e.touches;
-      console.log(touch);
-
-      e.offsetX = touch.clientX;
-      e.offsetY = touch.clientY;
-    }
-
-    const deltaMove = {
-      x: e.offsetX - this.previousMousePosition.x,
-      y: e.offsetY - this.previousMousePosition.y
-    };
-
-    if (this.isDragging) {
-      const deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(
-        new THREE.Euler(
-          toRadians(deltaMove.y * 0.15),
-          toRadians(deltaMove.x * 0.15),
-          0,
-          "XYZ"
-        )
-      );
-
-      this.star.quaternion.multiplyQuaternions(
-        deltaRotationQuaternion,
-        this.star.quaternion
-      );
-    }
-
-    this.previousMousePosition = {
-      x: e.offsetX,
-      y: e.offsetY
-    };
-  };
-
   private appendEventListener() {
     document.addEventListener(
-      "mousedown",
+      'mousedown',
       this.onDocumentMouseDown.bind(this),
       false
     );
     document.addEventListener(
-      "touchstart",
+      'touchstart',
       this.onDocumentTouchStart.bind(this),
       false
     );
     document.addEventListener(
-      "touchmove",
+      'touchmove',
       this.onDocumentTouchMove.bind(this),
       false
     );
@@ -252,17 +215,17 @@ export class Planet extends ThreeAbstract {
     this.isDragging = true;
 
     document.addEventListener(
-      "mousemove",
+      'mousemove',
       this.onDocumentMouseMove.bind(this),
       false
     );
     document.addEventListener(
-      "mouseup",
+      'mouseup',
       this.onDocumentMouseUp.bind(this),
       false
     );
     document.addEventListener(
-      "mouseout",
+      'mouseout',
       this.onDocumentMouseOut.bind(this),
       false
     );
@@ -275,6 +238,7 @@ export class Planet extends ThreeAbstract {
   }
 
   onDocumentMouseMove(event) {
+    if (!this.parent.enablePlanetRotation) return;
     if (!this.isDragging) return;
 
     this.mouseX = event.clientX - this.windowHalfX;
@@ -292,17 +256,17 @@ export class Planet extends ThreeAbstract {
     this.isDragging = false;
 
     document.removeEventListener(
-      "mousemove",
+      'mousemove',
       this.onDocumentMouseMove.bind(this),
       false
     );
     document.removeEventListener(
-      "mouseup",
+      'mouseup',
       this.onDocumentMouseUp.bind(this),
       false
     );
     document.removeEventListener(
-      "mouseout",
+      'mouseout',
       this.onDocumentMouseOut.bind(this),
       false
     );
@@ -310,24 +274,24 @@ export class Planet extends ThreeAbstract {
 
   onDocumentMouseOut(event) {
     document.removeEventListener(
-      "mousemove",
+      'mousemove',
       this.onDocumentMouseMove.bind(this),
       false
     );
     document.removeEventListener(
-      "mouseup",
+      'mouseup',
       this.onDocumentMouseUp.bind(this),
       false
     );
     document.removeEventListener(
-      "mouseout",
+      'mouseout',
       this.onDocumentMouseOut.bind(this),
       false
     );
   }
 
   onDocumentTouchStart(event) {
-    if (event.touches.length == 1) {
+    if (event.touches.length === 1) {
       this.isDragging = true;
       this.control.enabled = false;
 
@@ -340,7 +304,7 @@ export class Planet extends ThreeAbstract {
   }
 
   onDocumentTouchMove(event) {
-    if (event.touches.length == 1) {
+    if (event.touches.length === 1) {
       this.isDragging = true;
       this.control.enabled = false;
 
