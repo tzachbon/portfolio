@@ -35,12 +35,18 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
 
   const setActiveRef = () => {
     const oldRef = document.querySelector('.swiper-slide-active');
+    const { swiper } = slider;
 
     if (oldRef !== state.oldActiveNode && oldRef) {
       state.oldActiveNode = oldRef;
       const currentSlide = slider.slides.find(
         ({ name }) => name === state.oldActiveNode.id
       );
+
+      if (DESKTOP) {
+        swiper.setTranslate(swiper.getTranslate() - 80);
+      }
+
       onSlideChange(currentSlide);
     }
   };
@@ -100,6 +106,7 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
     effect: 'cube',
     grabCursor: true,
     loop: true,
+    speed: 400,
     cubeEffect: {
       shadow: true,
       slideShadows: true,

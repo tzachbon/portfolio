@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
 import ClassNames from 'classnames';
 import BGImg from '../BGImg/BGImg';
@@ -14,12 +14,19 @@ interface Props {
 }
 
 const AboutMe: React.FC<Props> = ({ className }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   className = ClassNames(className, 'AboutMe', 'form-page', 'main-screen');
   const { diffYears } = DateDiff(new Date(), new Date('01-11-2016'));
 
   return (
     <div className={className}>
-      <BGImg cover className='half-bg' src='assets/images/about-me.jpg' />
+      <BGImg
+        parentRef={containerRef}
+        cover
+        className='half-bg'
+        src='assets/images/about-me.jpg'
+      />
       <Wireframe fadeIn />
       <Button white to='/' className='go-back'>
         <Icon type='arrow-right' />
@@ -35,7 +42,8 @@ const AboutMe: React.FC<Props> = ({ className }) => {
             <p>
               My Name Is Tzach Bonfil And I Am A Full-Stack Developer For
               {` ${diffYears.toFixed(1)} `}
-              Years, Im Working With The Top Tear Technologies You Can See In The Development Community
+              Years, Im Working With The Top Tear Technologies You Can See In
+              The Development Community
             </p>
           </article>
 

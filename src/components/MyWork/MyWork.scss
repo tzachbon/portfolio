@@ -2,7 +2,7 @@
 
 .MyWork {
   @include flex-column;
-  background: linear-gradient(to bottom left, $dark-blue, $grey-dark);
+  background: linear-gradient(to bottom left, #60839b, $grey-dark);
 
   .BGImg {
     box-shadow: -1px 21px 73px -13px rgba(0, 0, 0, 0.3);

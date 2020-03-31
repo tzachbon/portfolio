@@ -14,6 +14,7 @@ import './MyWork.scss';
 interface Props extends WithClassName {}
 
 const MyWork: React.FC<Props> = ({ className }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const sliderDataContainerRef = useRef<HTMLDivElement>(null);
 
   const { slider } = useStores();
@@ -37,7 +38,7 @@ const MyWork: React.FC<Props> = ({ className }) => {
     setTimeout(() => {
       state.currentSlide = slide;
       state.show = !!slide;
-      
+
       if (!state.slideInit) {
         sliderDataContainerRef?.current?.scrollIntoView({ behavior: 'smooth' });
       } else {
@@ -53,8 +54,8 @@ const MyWork: React.FC<Props> = ({ className }) => {
   };
 
   return (
-    <div className={className}>
-      <BGImg cover src='assets/images/my-work.jpg' />
+    <div ref={containerRef} className={className}>
+      <BGImg parentRef={containerRef} cover src='assets/images/my-work.jpg' />
       <Button white to='/' className='go-back'>
         <Icon type='arrow-right' />
         <span>Go Back</span>
