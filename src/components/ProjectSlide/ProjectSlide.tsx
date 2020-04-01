@@ -77,14 +77,18 @@ const ProjectSlide: React.FC<Props> = React.forwardRef(
                 ))}
               </div>
               <div className='buttons-container'>
-                <Button white onClick={slider.goPrevious}>
-                  <Icon type='arrow-left' />
-                  <span>Previous</span>
-                </Button>
-                <Button white onClick={slider.goNext}>
-                  <span>Next</span>
-                  <Icon type='arrow-right' />
-                </Button>
+                {!state.isFirst && (
+                  <Button white onClick={slider.goPrevious}>
+                    <Icon type='arrow-left' />
+                    <span>Previous</span>
+                  </Button>
+                )}
+                {!state.isLast && (
+                  <Button white onClick={slider.goNext}>
+                    <span>Next</span>
+                    <Icon type='arrow-right' />
+                  </Button>
+                )}
               </div>
               <Viewer
                 visible={state.modalOpen}

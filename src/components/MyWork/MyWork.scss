@@ -5,7 +5,32 @@
   background: linear-gradient(to bottom left, #60839b, $grey-dark);
 
   .BGImg {
+    position: relative;
     box-shadow: -1px 21px 73px -13px rgba(0, 0, 0, 0.3);
+    @media #{$media-phone-landscape} {
+      height: 75vh;
+    }
+    &:after {
+      @include pseudo;
+      @include transform-origin(top);
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      background: $grey-dark;
+    }
+
+    .BGImg-image {
+      background-attachment: fixed;
+    }
+
+    &.BGImg-loaded {
+      &:after {
+        @include animation(bgOutY 0.5s 0.2s $easing both);
+      }
+
+      @include transform-origin(bottom);
+      @include animation(moveBgY 0.5s 0.2s $easing both);
+    }
   }
 
   .subtitles-wrapper {

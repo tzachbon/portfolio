@@ -92,14 +92,23 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
   const handleSlideActionChange = (action: 'next' | 'previous') => {
     const { swiper } = slider;
 
+    const {
+      activeIndex,
+      slidesGrid: { length: total }
+    } = swiper;
+
+    let nextIndex = 0;
     switch (action) {
       case 'next':
-        swiper?.slideNext();
+        nextIndex = 1;
         break;
       case 'previous':
-        swiper?.slidePrev();
+        nextIndex = -1;
         break;
     }
+
+
+    swiper?.slideTo(activeIndex + nextIndex);
   };
 
   const params = {
@@ -112,10 +121,6 @@ const SlideShow: React.FC<Props> = ({ className, onSlideChange }) => {
       slideShadows: true,
       shadowOffset: 20,
       shadowScale: 0.94
-    },
-    coverflowEffect: {
-      rotate: 30,
-      slideShadows: false
     },
     pagination: {
       el: '.swiper-pagination'
