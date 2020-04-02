@@ -22,6 +22,6 @@ jobs:
       - name: Set Username
         run: git config --global user.name "tzachbon"
       - name: Set Token
-        run: git remote set-url origin git@github.com:tzachbon/portfolio.git
+        run: git remote set-url origin https://github.com/tzachbon/portfolio.git
       - name: Deploy
         run: npm run deploy
