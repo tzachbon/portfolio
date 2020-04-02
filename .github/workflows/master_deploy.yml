@@ -17,9 +17,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Packages
         run: npm install
-      - name: Deploy to GH Pages
-run: |
-   git config --global user.email "tzachbonfil@gmail.com"
-   git config --global user.name "tzachbon"
-   git remote set-url origin https://6c9fad914aac92113506d34b55442cd8b2e445cb@github.com/tzachbon/portfolio.git
-   npm run deploy
+      - name: Set Mail
+        run: git config --global user.email "tzachbonfil@gmail.com"
+      - name: Set Username
+        run: git config --global user.name "tzachbon"
+      - name: Set Token
+        run: git remote set-url origin https://6c9fad914aac92113506d34b55442cd8b2e445cb@github.com/tzachbon/portfolio.git
+      - name: Deploy
+        run: npm run deploy
