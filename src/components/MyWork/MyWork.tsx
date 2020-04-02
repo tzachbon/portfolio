@@ -24,6 +24,7 @@ const MyWork: React.FC<Props> = ({ className }) => {
     currentSlide: null,
     sliderValue$: new Subject<number>(),
     slideInit: true,
+    imageLoaded: false,
     get currentSlideIndex() {
       return slider.slides.findIndex(
         ({ name }) => this.currentSlide?.name === name
@@ -55,12 +56,17 @@ const MyWork: React.FC<Props> = ({ className }) => {
 
   return (
     <div ref={containerRef} className={className}>
-      <BGImg parentRef={containerRef} cover src='assets/images/my-work.jpg' />
+      <BGImg
+        onImageLoaded={() => (state.imageLoaded = true)}
+        parentRef={containerRef}
+        cover
+        src='assets/images/my-work.jpg'
+      />
       <Button white to='/' className='go-back'>
         <Icon type='arrow-right' />
         <span>Go Back</span>
       </Button>
-      <header>
+      <header className={ClassNames({ loaded: state.imageLoaded })}>
         <h1>My Work</h1>
         <p>
           Lorem ipsum dolor sit, amet consectetur adipisicing elit.

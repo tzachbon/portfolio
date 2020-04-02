@@ -7,6 +7,18 @@
   min-height: 100vh;
   overflow: hidden;
 
+  &.main-mobile {
+    box-shadow: inset 0px 0px 153px 31px rgba(0, 0, 0, 0.75);
+    .video-background {
+      position: absolute;
+      animation: rightToLeft 50s linear infinite;
+      top: 0;
+      left: -70%;
+      height: 100%;
+      width: 177.77777778vh; /* 100 * 16 / 9 */
+      min-height: 56.25vw; /* 100 * 9 / 16 */
+    }
+  }
   .loaded {
     position: absolute;
     width: 100vw;
@@ -18,10 +30,9 @@
   .button-content {
     @include flex-center;
 
-    &> *{
+    & > * {
       margin-right: 1rem;
     }
-
   }
 
   header {
@@ -45,6 +56,8 @@
     @media #{$media-phone-landscape} {
       font-size: 4rem;
     }
+
+ 
   }
 
   .button-container {

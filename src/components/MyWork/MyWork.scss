@@ -2,7 +2,21 @@
 
 .MyWork {
   @include flex-column;
-  background: linear-gradient(to bottom left, #60839b, $grey-dark);
+  background: linear-gradient(to bottom left, #0ba8d8, $grey-dark);
+
+  header {
+    h1,
+    p {
+      color: black;
+    }
+    h1 {
+      @include animation(softFromBottom 0.2s 600ms $easing both);
+    }
+
+    p {
+      @include animation(softFromBottom 0.2s 800ms $easing both);
+    }
+  }
 
   .BGImg {
     position: relative;
@@ -16,16 +30,28 @@
       width: 100vw;
       height: 100vh;
       display: flex;
-      background: $grey-dark;
+      background: darken($grey-dark, 10%);
+
+      @media #{$media-phone-landscape} {
+        @include transform-origin(right);
+      }
     }
 
     .BGImg-image {
       background-attachment: fixed;
+
+      @media #{$media-phone-landscape} {
+        background-position-x: 57%;
+      }
     }
 
     &.BGImg-loaded {
       &:after {
         @include animation(bgOutY 0.5s 0.2s $easing both);
+
+        @media #{$media-phone-landscape} {
+          @include animation(bgOut 0.5s 0.2s $easing both);
+        }
       }
 
       @include transform-origin(bottom);

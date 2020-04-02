@@ -49,6 +49,9 @@ class Animation extends ThreeAbstract {
   }
 
   protected init() {
+
+    if (this.isMobile) return;
+
     this.startLoadingManager();
     this.startScene();
     this.startCamera();

@@ -2,19 +2,19 @@ import ClassNames from 'classnames';
 import { observer, useLocalStore } from 'mobx-react';
 import React, { useEffect } from 'react';
 import './BGImg.scss';
-import { fromEvent, Subscription } from 'rxjs';
+import { WithClassName } from '../../utils/types';
 
-interface Props {
+interface Props extends WithClassName {
   src: string;
   cover?: boolean;
-  className?;
   isImmediate?: boolean;
   parentRef?: React.MutableRefObject<HTMLDivElement>;
   ref?: React.Ref<HTMLDivElement>;
+  onImageLoaded?: () => any;
 }
 
 const BGImg: React.FC<Props> = React.forwardRef(
-  ({ className, parentRef, src, cover, isImmediate }, ref) => {
+  ({ className, parentRef, src, cover, isImmediate, onImageLoaded }, ref) => {
     const state = useLocalStore(() => ({
       isLoaded: false,
       isUnmounted: false
@@ -31,11 +31,18 @@ const BGImg: React.FC<Props> = React.forwardRef(
     const updateImage = (src: string) => {
       let image = new Image();
       image.src = src;
-      image.addEventListener('load', () => {
-        if (!state.isUnmounted) {
-          state.isLoaded = true;
+      image.addEventListener('load', onLoad);
+    };
+
+    const onLoad = () => {
+      if (!state.isUnmounted) {
+        state.isLoaded = true;
+        if (onImageLoaded) {
+          setTimeout(() => {
+            onImageLoaded();
+          }, 5000);
         }
-      });
+      }
     };
 
     let { isLoaded } = state;

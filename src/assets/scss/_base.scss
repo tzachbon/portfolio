@@ -227,11 +227,11 @@ select {
   }
 
   25% {
-    @include transform(translateX(-5rem));
+    @include transform(translateX(-10rem));
   }
 
   75% {
-    @include transform(translateX(5rem));
+    @include transform(translateX(10rem));
   }
 }
 

@@ -11,10 +11,13 @@ import './Main.scss';
 import ClassNames from 'classnames';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { startCase } from 'lodash';
+import MainMobile from './MainMobile/MainMobile';
 
 interface Props extends RouteComponentProps {}
 
-const Main: React.FC<Props> = ({ history, location }) => {
+const Main: React.FC<Props> = props => {
+  const { history, location } = props;
+
   const mainRef = useRef<HTMLDivElement>(null);
   const state = useLocalStore(() => ({
     isZoomed: false,
@@ -65,28 +68,36 @@ const Main: React.FC<Props> = ({ history, location }) => {
       state.opacity -= 0.01;
       requestAnimationFrame(onUpdateOpacity);
     } else {
+      state.isNavigationInProgress = false;
       state.isZoomEnded = true;
     }
   };
 
-  const navigateBySection = (sectionName: keyof typeof SECTION_ROUTES) => {
-    return () => {
+  const navigateBySection = (
+    sectionName: keyof typeof SECTION_ROUTES
+  ) => () => {
+
+    const route = SECTION_ROUTES[sectionName];
+    
+    if (DESKTOP) {
       state.loadingSection = sectionName;
       state.isNavigationInProgress = true;
       store.animation.zoomInOnSection(sectionName).then(() => {
-        const route = SECTION_ROUTES[sectionName];
         if (route) {
           history.push(route);
           state.isNavigationInProgress = false;
           state.loadingSection = '';
         }
       });
-    };
+    } else {
+      history.push(route);
+    }
   };
 
   return (
     <div className='main' onClick={onMainClicked} ref={mainRef}>
-      {!state.isLoaded() && (
+      {!DESKTOP && <MainMobile {...props} />}
+      {!state.isLoaded() && DESKTOP && (
         <div
           className='loaded'
           style={{
