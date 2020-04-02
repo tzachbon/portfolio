@@ -11,7 +11,6 @@ class ContactMe3D extends ThreeAbstract {
   group: THREE.Group;
   rocks: THREE.Mesh[];
   header: THREE.Mesh;
-  mail: THREE.Object3D;
   robot: THREE.Object3D;
   mainStats = {
     rotation: {
@@ -185,7 +184,6 @@ class ContactMe3D extends ThreeAbstract {
 
             i++;
           }
-          this.loadMail();
           this.loadRobot();
           this.append();
         }
@@ -193,35 +191,6 @@ class ContactMe3D extends ThreeAbstract {
     });
   }
 
-  loadMail() {
-    const loader = GLTFLoader(this.loadingManager);
-
-    loader.load('assets/models/vintage_mailbox/scene.gltf', gltf => {
-      const scene = gltf.scene as THREE.Scene;
-      this.mail = scene.children[0];
-      this.mail.position.set(
-        this.mainStats.mailP.x,
-        this.mainStats.mailP.y,
-        this.mainStats.mailP.z
-      );
-      this.mail.rotation.set(
-        this.mainStats.mailR.x,
-        this.mainStats.mailR.y,
-        this.mainStats.mailR.z
-      );
-      this.mail.castShadow = true;
-      this.mail.receiveShadow = true;
-      this.parent.add(this.mail);
-      this.scene.add(gltf.scene);
-
-      const mixer = new THREE.AnimationMixer(scene);
-      gltf.animations.forEach(clip => {
-        mixer.clipAction(clip).play();
-      });
-
-      this.renderer.render(scene, this.camera);
-    });
-  }
 
   loadRobot() {
     const loader = GLTFLoader(this.loadingManager);

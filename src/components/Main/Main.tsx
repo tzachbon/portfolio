@@ -21,7 +21,7 @@ const Main: React.FC<Props> = ({ history, location }) => {
     opacity: 1,
     isZoomEnded: false,
     loaded: 0,
-    isNavitionInProgress: false,
+    isNavigationInProgress: false,
     loadingSection: '',
     buttons: {
       top: ['aboutMe', 'myWork'],
@@ -53,7 +53,10 @@ const Main: React.FC<Props> = ({ history, location }) => {
     if (!state.isZoomed) {
       onUpdateOpacity();
       state.isZoomed = true;
-      store.zoomIn();
+
+      if (DESKTOP) {
+        store.zoomIn();
+      }
     }
   };
 
@@ -69,12 +72,12 @@ const Main: React.FC<Props> = ({ history, location }) => {
   const navigateBySection = (sectionName: keyof typeof SECTION_ROUTES) => {
     return () => {
       state.loadingSection = sectionName;
-      state.isNavitionInProgress = true;
+      state.isNavigationInProgress = true;
       store.animation.zoomInOnSection(sectionName).then(() => {
         const route = SECTION_ROUTES[sectionName];
         if (route) {
           history.push(route);
-          state.isNavitionInProgress = false;
+          state.isNavigationInProgress = false;
           state.loadingSection = '';
         }
       });
@@ -121,7 +124,7 @@ const Main: React.FC<Props> = ({ history, location }) => {
                   white
                   onClick={navigateBySection(buttonName)}
                   className={ClassNames(SECTION_ROUTES[buttonName], {
-                    disable: state.isNavitionInProgress
+                    disable: state.isNavigationInProgress
                   })}
                 >
                   <div className='button-content'>

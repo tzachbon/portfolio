@@ -201,7 +201,7 @@ class Animation extends ThreeAbstract {
 
     let startTime = Date.now();
 
-    this.scene.add(this.text);
+    // this.scene.add(this.text);
 
     this.control.enableZoom = false;
 

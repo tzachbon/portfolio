@@ -7,14 +7,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { MuiThemeProvider } from '@material-ui/core';
 import { THEME } from './utils/material';
 
-
 const Index = () => (
-    <BrowserRouter>
-        <MuiThemeProvider theme={THEME}>
-            <App />
-        </MuiThemeProvider>
-    </BrowserRouter>
-)
+  <BrowserRouter basename={process.env.REACT_APP_DEV ? '/' : '/portfolio'}>
+    <MuiThemeProvider theme={THEME}>
+      <App />
+    </MuiThemeProvider>
+  </BrowserRouter>
+);
 
 ReactDOM.render(<Index />, document.getElementById('root'));
 
