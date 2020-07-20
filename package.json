@@ -16,7 +16,7 @@
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "js-easing-functions": "^1.0.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "materialize-css": "^1.0.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",
