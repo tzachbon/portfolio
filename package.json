@@ -29,7 +29,7 @@
     "react-spring": "^8.0.27",
     "react-viewer": "^3.2.1",
     "rxjs": "^6.5.4",
-    "swiper": "^5.3.6",
+    "swiper": "^6.5.1",
     "three-obj-mtl-loader": "^1.0.3",
     "three-orbit-controls": "^82.1.0",
     "typescript": "~3.7.2"
